@@ -14,6 +14,9 @@ export const protect = asyncHandler(async(req, res, next)=>{
 
            next()
        } catch (error) {
+            if(error.name === "TokenExpiredError"){
+                throw new Error('Your session has expired, please kindly login')
+            }
             if(process.env.NODE_ENV !== 'production'){
                 console.error( 'Error occured while token validation', error)
             }

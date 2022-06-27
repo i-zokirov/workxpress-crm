@@ -50,7 +50,7 @@ userSchema.methods.matchPassword = async function(enteredPassword){
     return await bcrypt.compare(enteredPassword, this.password)
 }
 
-userSchema.methods.compareSystemPassword = async function(systemPassword){
+userSchema.methods.matchSystemPassword = async function(systemPassword){
     const valid = await bcrypt.compare(systemPassword, this.password)
     if(valid){
         this.passwordExpired = true

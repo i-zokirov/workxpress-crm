@@ -32,8 +32,8 @@ const studentSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    age: {
-        type: Number,
+    birthdate: {
+        type: String,
         required: true  
     },
     gender: {
@@ -66,6 +66,9 @@ const studentSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
+    currentTeacherSince :{
+        type: Date,
+    },
     previousTeachers: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
@@ -74,7 +77,10 @@ const studentSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Class"
     }],
-
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }
 }, {
     timestamps: true
 })

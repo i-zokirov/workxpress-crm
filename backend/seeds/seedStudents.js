@@ -17,7 +17,7 @@ async function  seedStudents () {
                 firstName: student.name.split(" ")[0],
                 lastName: student.name.split(" ")[1],
                 name: student.name,
-                age: Math.floor(Math.random() * 40),
+                birthdate: `${Math.floor(Math.random() * 30)}/${Math.floor(Math.random() * 12)}/2000`,
                 gender: genders[Math.floor(Math.random() * 2)],
                 email: student.email,
                 mobilePhoneNumber: student.phone,
@@ -27,7 +27,8 @@ async function  seedStudents () {
                     city: student.address.city,
                     postalCode: student.address.suite,
 
-                }
+                },
+                createdBy: "62b879e58769f97ed69e1e11"
             })
         }
 

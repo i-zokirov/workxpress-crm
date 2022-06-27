@@ -6,6 +6,7 @@ import connectDB from "./config/mongoDBConfig.js"
 // ROUTES
 import userRouter from "./routers/userRoutes.js"
 import studentRouter from "./routers/studentRoutes.js"
+import officeRouter from "./routers/officeRoutes.js"
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -24,6 +25,8 @@ app.use(express.json())
 // ROUTE HANDLERS
 app.use("/api/users", userRouter)
 app.use("/api/students", studentRouter)
+app.use("/api/offices", officeRouter)
+
 
 // ERROR HANDLERS
 app.use(notFound)
