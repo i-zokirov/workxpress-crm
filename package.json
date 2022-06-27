@@ -1,0 +1,30 @@
+{
+    "name": "workxpress-crm",
+    "version": "1.0.0",
+    "description": "",
+    "main": "server.js",
+    "type": "module",
+    "scripts": {
+        "start": "node backend/index.js",
+        "server": "nodemon backend/server.js",
+        "client": "npm start --prefix frontend",
+        "dev": "concurrently \"npm run server\" \"npm run client\"",
+        "data:seedStudents": "node backend/seeds/seedStudents" 
+    },
+    "author": "Ikboljon Zokirov",
+    "license": "ISC",
+    "dependencies": {
+        "axios": "^0.27.2",
+        "bcryptjs": "^2.4.3",
+        "concurrently": "^7.2.2",
+        "express": "^4.18.1",
+        "express-async-handler": "^1.2.0",
+        "joi": "^17.6.0",
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^6.4.0"
+    },
+    "devDependencies": {
+        "dotenv": "^16.0.1",
+        "nodemon": "^2.0.18"
+    }
+}
