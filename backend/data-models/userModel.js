@@ -19,12 +19,38 @@ const userSchema = mongoose.Schema({
         required: true,
         unique: true
     },
-    password: {
+    image: {
+        type: String,
+    },
+    birthdate: {
         type: String,
         required: true
     },
-    systemPassword:{
+    gender: {
         type: String,
+        required: true,
+        enum: ["Male", "Female", "Other"]
+    },
+    role: {
+        type: String,
+        required: true,
+        enum: ["Administrator", "Teacher", "Receptionist", "Teacher"],
+        default: "Teacher"
+    },
+    registeredOffice:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Office"
+    },
+    mobilePhoneNumber: {
+        type: String,
+        required: true
+    },
+    homeTelephoneNumber: {
+        type: String,
+    },
+    password: {
+        type: String,
+        required: true
     },
     passwordExpired: {
         type: Boolean,
@@ -35,30 +61,28 @@ const userSchema = mongoose.Schema({
         type: Date,
         default: new Date()
     },
-    role: {
-        type: String,
+    rootAdmin: {
+        type: Boolean,
         required: true,
-        enum: ["Administrator", "Teacher", "Receptionist", "Customer Service Advisor"],
-        default: "Customer Service Advisor"
-    },
+        default: false
+    }
 }, {
     timestamps: true
 })
 
 // custom middleware to compare password
 userSchema.methods.matchPassword = async function(enteredPassword){
-    return await bcrypt.compare(enteredPassword, this.password)
-}
-
-userSchema.methods.matchSystemPassword = async function(systemPassword){
-    const valid = await bcrypt.compare(systemPassword, this.password)
+    
+    const valid = await bcrypt.compare(enteredPassword, this.password)
     if(valid){
-        this.passwordExpired = true
+        // this.passwordExpired = true
+        // TODO: Implement a logic for password expiry
         return true
     } else {
         return false
     }
 }
+
 
 // before user record is registered, password is hashed
 userSchema.pre('save', async function(next){
