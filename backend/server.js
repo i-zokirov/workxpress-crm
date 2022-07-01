@@ -1,5 +1,6 @@
 import express from 'express'
 import path from "path"
+import cors from "cors"
 import { notFound, errorHandler } from './errorHandlers/errorHandlers.js'
 import connectDB from "./config/mongoDBConfig.js"
 
@@ -20,6 +21,7 @@ connectDB()
 // APP
 const app = express()
 app.use(express.json())
+app.use(cors())
 
 
 // ROUTE HANDLERS

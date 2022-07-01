@@ -1,7 +1,8 @@
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import LinearProgress from '@mui/material/LinearProgress';
+import { LinearProgress, Container } from "@mui/material";
+
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -13,36 +14,35 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import buildTableData from "layouts/students/data/buildTableData";
 
-import { useDispatch, useSelector } from "react-redux";
+import buildTableData from "layouts/offices/data/buildTableData";
 import { useEffect, useState } from "react";
-import { loadStudentsList } from "redux/actions/studentActions";
-import { Container } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { loadOfficeList } from "redux/actions/officeActions";
 
-function Tables() {
 
+const OfficesTable = () => {
   const [rows, setRows] = useState([])
   const [columns, setColumns] = useState([])
+
   const dispatch = useDispatch()
 
-  // dispatch request to load data when page loads
+  const {list, error, loading} = useSelector(state => state.offices)
+
   useEffect(() => {
     if(!list.length){
-      dispatch(loadStudentsList())
+      dispatch(loadOfficeList())
     }
   }, [])
 
-  // get data from redux
-  const {list, error, loading} = useSelector(state => state.students)
-
-  // keep track of students list
   useEffect(() => {
-    const { columns, rows } = buildTableData(list);
-    setRows(rows)
-    setColumns(columns)
-  },[list])
-
+    if(list.length){
+      const { columns, rows } = buildTableData(list);
+      setRows(rows)
+      setColumns(columns)
+    }
+  }, [list])
+  
 
   return (
     <DashboardLayout>
@@ -57,16 +57,16 @@ function Tables() {
                 py={3}
                 px={2}
                 variant="gradient"
-                bgColor={error ? "error" : "info"}
+                bgColor={error ? "error" :"info"}
                 borderRadius="lg"
-                coloredShadow={error ? "error" : "info"}
+                coloredShadow={error ? "error" :"info"}
               >
                 <MDTypography variant="h6" color="white">
-                  Students {error && `: ${error}`}
+                  Offices
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
-                { loading ? <Container maxWidth="sm"> <LinearProgress color="info"/> </Container>: list.length && <DataTable
+                {loading ? <Container maxWidth="sm"><LinearProgress color="info"/></Container> : list.length && <DataTable
                   table={{ columns, rows }}
                   isSorted={false}
                   entriesPerPage={false}
@@ -83,4 +83,4 @@ function Tables() {
   );
 }
 
-export default Tables;
+export default OfficesTable;

@@ -23,24 +23,31 @@
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
 import Tables from "layouts/tables";
+import Offices from "layouts/offices";
 import Staff from "layouts/staff";
 import Students from "layouts/students";
 import Billing from "layouts/billing";
-import RTL from "layouts/rtl";
+
 import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
+
+
+
 // @mui icons
 import Icon from "@mui/material/Icon";
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import BusinessIcon from '@mui/icons-material/Business';
 import SchoolIcon from '@mui/icons-material/School';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import EventIcon from '@mui/icons-material/Event';
 import LogoutIcon from '@mui/icons-material/Logout';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import Logout from "LogOut";
+
+
+
 const routes = [
     {
     type: "collapse",
@@ -80,7 +87,7 @@ const routes = [
     key: "offices",
     icon: <BusinessIcon fontSize="small"/>,
     route: "/offices",
-    component: <Tables />,
+    component: <Offices />,
   },
   {
     type: "collapse",
@@ -145,7 +152,7 @@ const routes = [
     key: "logout",
     icon: <LogoutIcon fontSize="small"/>,
     route: "/authentication/logout",
-    component: <SignIn />,
+    component: <Logout/>,
   },
 ];
 

@@ -7,7 +7,7 @@ import Student from "../data-models/studentModel.js"
 // @access: PRIVATE
 export const getAllStudents = asyncHandler(async(req, res) => {
     try {
-        const students = await Student.find().populate("createdBy", "name")
+        const students = await Student.find().populate("createdBy", "name role")
         res.json(students)        
     } catch (error) {
         throw error

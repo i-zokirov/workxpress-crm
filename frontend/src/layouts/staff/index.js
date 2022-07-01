@@ -13,12 +13,35 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import authorsTableData from "layouts/tables/data/authorsTableData";
-import projectsTableData from "layouts/tables/data/projectsTableData";
+import buildTableDate from "layouts/staff/data/buildTableData";
 
-function Tables() {
-  const { columns, rows } = authorsTableData();
-  const { columns: pColumns, rows: pRows } = projectsTableData();
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loadStaffList } from "redux/actions/staffActions";
+import { Container, LinearProgress } from "@mui/material";
+
+const  Staff = () => {
+  
+  const [rows, setRows] = useState([])
+  const [columns, setColumns] = useState([])
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if(!list.length){
+      dispatch(loadStaffList())
+    }
+  }, [])
+
+
+  const {list, error, loading} = useSelector(state => state.staff)
+
+  useEffect(() => {
+    if(list.length){
+      const { columns, rows } = buildTableDate(list);
+      setRows(rows)
+      setColumns(columns)
+    }
+  }, [list])
 
   return (
     <DashboardLayout>
@@ -33,25 +56,26 @@ function Tables() {
                 py={3}
                 px={2}
                 variant="gradient"
-                bgColor="info"
+                bgColor={error ? "error" : "info"}
                 borderRadius="lg"
-                coloredShadow="info"
+                coloredShadow={error ? "error" : "info"}
               >
                 <MDTypography variant="h6" color="white">
-                  Staff/Employees
+                  Staff/Employees { error && `: ${error}`}
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
-                <DataTable
+               {loading ? <Container maxWidth="sm"><LinearProgress color="info"/></Container> : list.length &&  <DataTable
                   table={{ columns, rows }}
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}
                   noEndBorder
-                />
+                />}
               </MDBox>
             </Card>
           </Grid>
+          
         </Grid>
       </MDBox>
       <Footer />
@@ -59,4 +83,4 @@ function Tables() {
   );
 }
 
-export default Tables;
+export default Staff;

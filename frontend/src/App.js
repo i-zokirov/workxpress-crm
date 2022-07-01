@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
-
+import { useState, useEffect } from "react";
+import { useSelector } from 'react-redux'
 // react-router components
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
@@ -17,16 +17,10 @@ import Configurator from "examples/Configurator";
 
 // Material Dashboard 2 React themes
 import theme from "assets/theme";
-import themeRTL from "assets/theme/theme-rtl";
+
 
 // Material Dashboard 2 React Dark Mode themes
 import themeDark from "assets/theme-dark";
-import themeDarkRTL from "assets/theme-dark/theme-rtl";
-
-// RTL plugins
-import rtlPlugin from "stylis-plugin-rtl";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
 
 // Material Dashboard 2 React routes
 import routes from "routes";
@@ -34,11 +28,15 @@ import routes from "routes";
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
 
+import ProtectRoute from "ProtectRoute"
+
 // Images
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 
-export default function App() {
+
+const App = () => {
+  
   const [controller, dispatch] = useMaterialUIController();
   const {
     miniSidenav,
@@ -51,18 +49,12 @@ export default function App() {
     darkMode,
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
-  const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
 
-  // Cache for the rtl
-  useMemo(() => {
-    const cacheRtl = createCache({
-      key: "rtl",
-      stylisPlugins: [rtlPlugin],
-    });
+  // GET user`s authentication status
+  const {authenticated} = useSelector(state => state.auth)
+  
 
-    setRtlCache(cacheRtl);
-  }, []);
 
   // Open sidenav when mouse enter on mini sidenav
   const handleOnMouseEnter = () => {
@@ -71,6 +63,7 @@ export default function App() {
       setOnMouseEnter(true);
     }
   };
+
 
   // Close sidenav when mouse leave mini sidenav
   const handleOnMouseLeave = () => {
@@ -94,18 +87,31 @@ export default function App() {
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
 
-  const getRoutes = (allRoutes) =>
-    allRoutes.map((route) => {
+
+
+
+  const getRoutes = (allRoutes) =>{
+    return allRoutes.map((route) => {
       if (route.collapse) {
         return getRoutes(route.collapse);
       }
 
       if (route.route) {
-        return <Route exact path={route.route} element={route.component} key={route.key} />;
+        return <Route 
+          exact 
+          path={route.route} 
+          element={
+            route.key === "sign-in" || route.key === "sign-up" 
+              ? route.component :
+              <ProtectRoute redirectPath="/authentication/sign-in" authenticated={authenticated}> {route.component} </ProtectRoute>
+            }
+          key={route.key} 
+          />;
       }
 
       return null;
     });
+  }
 
   const getSideNavRoutes = (allRoutes) => allRoutes.filter(route => route.key !== "sign-up" && route.key !== "sign-in")
 
@@ -159,3 +165,6 @@ export default function App() {
     </ThemeProvider>
   );
 }
+
+
+export default App
