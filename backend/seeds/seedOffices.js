@@ -22,6 +22,7 @@ async function  seedOffices () {
                     city: dummy.address.city,
                     postalCode: dummy.address.suite,
                 },
+                manager: "62baeed165b8cade8a075a7d"
 
             })
         }

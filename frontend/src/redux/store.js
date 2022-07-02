@@ -3,7 +3,7 @@ import thunk from "redux-thunk";
 import {composeWithDevTools} from 'redux-devtools-extension';
 import initialState from "./initialState";
 
-import { authenticationReducer } from "./reducers/userReducers";
+import { authenticationReducer, userProfileReducer } from "./reducers/userReducers";
 import { studentsReducer } from "./reducers/studenReducers";
 import { staffReducer } from "./reducers/staffReducers";
 import { officesReducer } from "./reducers/officeReducers";
@@ -16,7 +16,8 @@ const masterReducer = combineReducers({
     auth: authenticationReducer,
     students: studentsReducer,
     staff: staffReducer,
-    offices: officesReducer
+    offices: officesReducer,
+    profile: userProfileReducer
 })
 
 

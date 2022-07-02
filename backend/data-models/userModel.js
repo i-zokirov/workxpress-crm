@@ -31,6 +31,9 @@ const userSchema = mongoose.Schema({
         required: true,
         enum: ["Male", "Female", "Other"]
     },
+    bio: {
+        type: String,
+    },
     role: {
         type: String,
         required: true,
@@ -65,7 +68,13 @@ const userSchema = mongoose.Schema({
         type: Boolean,
         required: true,
         default: false
-    }
+    },
+    socialMedia: [
+        {
+            type: String,
+            enum: ["Facebook", "Telegram", "Instagram"]
+        }
+    ]
 }, {
     timestamps: true
 })

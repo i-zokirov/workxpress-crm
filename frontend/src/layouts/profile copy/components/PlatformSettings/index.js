@@ -1,3 +1,17 @@
+/**
+=========================================================
+* Material Dashboard 2 React - v2.1.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/material-dashboard-react
+* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+
+Coded by www.creative-tim.com
+
+ =========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+*/
 
 import { useState } from "react";
 
@@ -10,28 +24,12 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
 function PlatformSettings() {
-  const [newStudentAssigned, setNewStudentAssigned] = useState(true);
-  const [newClassAssigned, setNewClassAssigned] = useState(false);
+  const [followsMe, setFollowsMe] = useState(true);
+  const [answersPost, setAnswersPost] = useState(false);
   const [mentionsMe, setMentionsMe] = useState(true);
-
+  const [newLaunches, setNewLaunches] = useState(false);
+  const [productUpdate, setProductUpdate] = useState(true);
   const [newsletter, setNewsletter] = useState(false);
-
-  const handleChange = (e) => {
-    switch(e.target.name){
-      case "newStudentAssigned":
-        setNewStudentAssigned(prev => !prev)
-        break
-      case "newClassAssigned":
-        setNewClassAssigned(prev => !prev)
-        break
-      case "mentionsMe":
-        setMentionsMe(prev => !prev)
-        break
-      case "newsletter":
-        setNewsletter(prev => !prev)
-        break
-    }
-  }
 
   return (
     <Card sx={{ boxShadow: "none" }}>
@@ -46,27 +44,27 @@ function PlatformSettings() {
         </MDTypography>
         <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
           <MDBox mt={0.5}>
-            <Switch checked={newStudentAssigned} name="newStudentAssigned" onChange={handleChange} />
+            <Switch checked={followsMe} onChange={() => setFollowsMe(!followsMe)} />
           </MDBox>
           <MDBox width="80%" ml={0.5}>
             <MDTypography variant="button" fontWeight="regular" color="text">
-              Email me when new student is assigned
+              Email me when someone follows me
             </MDTypography>
           </MDBox>
         </MDBox>
         <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
           <MDBox mt={0.5}>
-            <Switch checked={newClassAssigned} name="newClassAssigned" onChange={handleChange} />
+            <Switch checked={answersPost} onChange={() => setAnswersPost(!answersPost)} />
           </MDBox>
           <MDBox width="80%" ml={0.5}>
             <MDTypography variant="button" fontWeight="regular" color="text">
-              Email me when new class is assigned
+              Email me when someone answers on my post
             </MDTypography>
           </MDBox>
         </MDBox>
         <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
           <MDBox mt={0.5}>
-            <Switch checked={mentionsMe} name="mentionsMe" onChange={handleChange} />
+            <Switch checked={mentionsMe} onChange={() => setMentionsMe(!mentionsMe)} />
           </MDBox>
           <MDBox width="80%" ml={0.5}>
             <MDTypography variant="button" fontWeight="regular" color="text">
@@ -79,10 +77,29 @@ function PlatformSettings() {
             application
           </MDTypography>
         </MDBox>
-
         <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
           <MDBox mt={0.5}>
-            <Switch checked={newsletter} name="newsletter" onChange={handleChange} />
+            <Switch checked={newLaunches} onChange={() => setNewLaunches(!newLaunches)} />
+          </MDBox>
+          <MDBox width="80%" ml={0.5}>
+            <MDTypography variant="button" fontWeight="regular" color="text">
+              New launches and projects
+            </MDTypography>
+          </MDBox>
+        </MDBox>
+        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
+          <MDBox mt={0.5}>
+            <Switch checked={productUpdate} onChange={() => setProductUpdate(!productUpdate)} />
+          </MDBox>
+          <MDBox width="80%" ml={0.5}>
+            <MDTypography variant="button" fontWeight="regular" color="text">
+              Monthly product updates
+            </MDTypography>
+          </MDBox>
+        </MDBox>
+        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
+          <MDBox mt={0.5}>
+            <Switch checked={newsletter} onChange={() => setNewsletter(!newsletter)} />
           </MDBox>
           <MDBox width="80%" ml={0.5}>
             <MDTypography variant="button" fontWeight="regular" color="text">

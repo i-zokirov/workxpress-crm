@@ -15,6 +15,9 @@ const initialState = {
     },
     offices: {
         list: []
+    },
+    profile: {
+        data: null
     }
 }
 

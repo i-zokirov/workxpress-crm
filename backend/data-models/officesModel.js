@@ -33,6 +33,10 @@ const officeSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     }],
+    manager: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }
 }, {
     timestamps: true
 })

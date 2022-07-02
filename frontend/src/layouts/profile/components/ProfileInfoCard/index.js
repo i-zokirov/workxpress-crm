@@ -1,8 +1,3 @@
-
-
-// react-routers components
-import { Link } from "react-router-dom";
-
 // prop-types is library for typechecking of props
 import PropTypes from "prop-types";
 
@@ -20,7 +15,7 @@ import MDTypography from "components/MDTypography";
 import colors from "assets/theme/base/colors";
 import typography from "assets/theme/base/typography";
 
-function ProfileInfoCard({ title, description, info, social, action, shadow }) {
+const  ProfileInfoCard = ({ title, description, info, social, action, shadow }) => {
   const labels = [];
   const values = [];
   const { socialMediaColors } = colors;
@@ -77,7 +72,7 @@ function ProfileInfoCard({ title, description, info, social, action, shadow }) {
         <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
           {title}
         </MDTypography>
-        <MDTypography component={Link} to={action.route} variant="body2" color="secondary">
+        <MDTypography  variant="body2" color="secondary" onClick={action.function}>
           <Tooltip title={action.tooltip} placement="top">
             <Icon>edit</Icon>
           </Tooltip>
@@ -117,10 +112,6 @@ ProfileInfoCard.propTypes = {
   description: PropTypes.string.isRequired,
   info: PropTypes.objectOf(PropTypes.string).isRequired,
   social: PropTypes.arrayOf(PropTypes.object).isRequired,
-  action: PropTypes.shape({
-    route: PropTypes.string.isRequired,
-    tooltip: PropTypes.string.isRequired,
-  }).isRequired,
   shadow: PropTypes.bool,
 };
 
