@@ -13,6 +13,7 @@ const style = {
   boxShadow: 24,
   borderRadius: "10px",
   p: 4,
+  
 };
 
 const TransitionModal = ({open, onClose, children, title, description}) => {
@@ -30,15 +31,16 @@ const TransitionModal = ({open, onClose, children, title, description}) => {
 
     return (
         <Modal
-        aria-labelledby={`transition-modal-${title}`}
-        aria-describedby={`transition-modal-${description}`}
-        open={open}
-        onClose={onClose}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
+            aria-labelledby={`transition-modal-${title}`}
+            aria-describedby={`transition-modal-${description}`}
+            open={open}
+            onClose={onClose}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+            timeout: 500,
+            }}
+            sx={{overflow: "scroll"}}
         >
             <Fade in={open}>
                 <Box sx={{...style, width: `${isMobile ? "400px" : "600px"}`}}>

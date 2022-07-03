@@ -153,11 +153,13 @@ const App = () => {
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
           />
+          
           <Configurator />
           {configsButton}
         </>
       )}
       {layout === "vr" && <Configurator />}
+      
       <Routes>
         {getRoutes(routes)}
         <Route path="*" element={<Navigate to="/dashboard" />} />

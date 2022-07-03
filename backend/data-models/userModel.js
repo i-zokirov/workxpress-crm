@@ -40,6 +40,15 @@ const userSchema = mongoose.Schema({
         enum: ["Administrator", "Teacher", "Receptionist", "Teacher"],
         default: "Teacher"
     },
+    telegram: {
+        type: String,
+    },
+    instagram: {
+        type: String,
+    },
+    facebook: {
+        type: String,
+    },
     registeredOffice:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Office"
@@ -69,12 +78,6 @@ const userSchema = mongoose.Schema({
         required: true,
         default: false
     },
-    socialMedia: [
-        {
-            type: String,
-            enum: ["Facebook", "Telegram", "Instagram"]
-        }
-    ]
 }, {
     timestamps: true
 })

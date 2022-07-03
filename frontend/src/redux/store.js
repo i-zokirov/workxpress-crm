@@ -1,27 +1,34 @@
-import { combineReducers, createStore,  applyMiddleware} from "redux";
+import { combineReducers, createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
-import {composeWithDevTools} from 'redux-devtools-extension';
+import { composeWithDevTools } from "redux-devtools-extension";
 import initialState from "./initialState";
 
-import { authenticationReducer, userProfileReducer } from "./reducers/userReducers";
+import {
+    authenticationReducer,
+    updateProfileReducer,
+    userProfileReducer,
+} from "./reducers/userReducers";
 import { studentsReducer } from "./reducers/studenReducers";
 import { staffReducer } from "./reducers/staffReducers";
 import { officesReducer } from "./reducers/officeReducers";
+import notificationReducer from "./reducers/notificationReducer";
 
-
-const middleware = [thunk]
-
+const middleware = [thunk];
 
 const masterReducer = combineReducers({
     auth: authenticationReducer,
     students: studentsReducer,
     staff: staffReducer,
     offices: officesReducer,
-    profile: userProfileReducer
-})
+    profile: userProfileReducer,
+    updateProfile: updateProfileReducer,
+    notification: notificationReducer,
+});
 
+const store = createStore(
+    masterReducer,
+    initialState,
+    composeWithDevTools(applyMiddleware(...middleware))
+);
 
-
-const store = createStore(masterReducer, initialState, composeWithDevTools(applyMiddleware(...middleware)))
-
-export default store
+export default store;

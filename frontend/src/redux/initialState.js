@@ -18,7 +18,7 @@ const initialState = {
     },
     profile: {
         data: null
-    }
+    },
 }
 
 
