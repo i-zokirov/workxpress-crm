@@ -1,7 +1,4 @@
-import { useState, useEffect } from "react";
-
-// prop-types is a library for typechecking of props.
-import PropTypes from "prop-types";
+import React, { useState, useEffect } from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -13,17 +10,31 @@ import Icon from "@mui/material/Icon";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
+import MDBadge from "components/MDBadge";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
+
+import burceMars from "assets/images/bruce-mars.jpg";
 
 // Material Dashboard 2 React base styles
 import breakpoints from "assets/theme/base/breakpoints";
 
-// Images
-import burceMars from "assets/images/bruce-mars.jpg";
-import backgroundImage from "assets/images/bg-profile.jpeg";
+const assignColor = (status) => {
+    switch (status) {
+        case "Student":
+            return "info";
+        case "New Applicant":
+            return "success";
+        case "Alumni":
+            return "warning";
+        case "Graduated":
+            return "primary";
+        case "Drop-out":
+            return "dark";
+    }
+};
 
-function Header({ children, name, role }) {
+const Profile = ({ name, status, children }) => {
     const [tabsOrientation, setTabsOrientation] = useState("horizontal");
     const [tabValue, setTabValue] = useState(0);
 
@@ -56,21 +67,8 @@ function Header({ children, name, role }) {
                 display="flex"
                 alignItems="center"
                 position="relative"
-                minHeight="18.75rem"
+                minHeight="5.75rem"
                 borderRadius="xl"
-                sx={{
-                    backgroundImage: ({
-                        functions: { rgba, linearGradient },
-                        palette: { gradients },
-                    }) =>
-                        `${linearGradient(
-                            rgba(gradients.info.main, 0.6),
-                            rgba(gradients.info.state, 0.6)
-                        )}, url(${backgroundImage})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "50%",
-                    overflow: "hidden",
-                }}
             />
             <Card
                 sx={{
@@ -90,20 +88,23 @@ function Header({ children, name, role }) {
                             shadow="sm"
                         />
                     </Grid>
+
                     <Grid item>
                         <MDBox height="100%" mt={0.5} lineHeight={1}>
                             <MDTypography variant="h5" fontWeight="medium">
                                 {name}
                             </MDTypography>
-                            <MDTypography
-                                variant="button"
-                                color="text"
-                                fontWeight="regular"
-                            >
-                                {role}
-                            </MDTypography>
+                            <MDBox>
+                                <MDBadge
+                                    badgeContent={status}
+                                    color={assignColor(status)}
+                                    variant="gradient"
+                                    size="sm"
+                                />
+                            </MDBox>
                         </MDBox>
                     </Grid>
+
                     <Grid item xs={12} md={6} lg={4} sx={{ ml: "auto" }}>
                         <AppBar position="static">
                             <Tabs
@@ -112,35 +113,24 @@ function Header({ children, name, role }) {
                                 onChange={handleSetTabValue}
                             >
                                 <Tab
-                                    label="App"
+                                    label="Profile"
                                     icon={
                                         <Icon
                                             fontSize="small"
                                             sx={{ mt: -0.25 }}
                                         >
-                                            home
+                                            account_box_icon
                                         </Icon>
                                     }
                                 />
                                 <Tab
-                                    label="Message"
+                                    label="Class"
                                     icon={
                                         <Icon
                                             fontSize="small"
                                             sx={{ mt: -0.25 }}
                                         >
-                                            email
-                                        </Icon>
-                                    }
-                                />
-                                <Tab
-                                    label="Settings"
-                                    icon={
-                                        <Icon
-                                            fontSize="small"
-                                            sx={{ mt: -0.25 }}
-                                        >
-                                            settings
+                                            calendar_month
                                         </Icon>
                                     }
                                 />
@@ -152,16 +142,6 @@ function Header({ children, name, role }) {
             </Card>
         </MDBox>
     );
-}
-
-// Setting default props for the Header
-Header.defaultProps = {
-    children: "",
 };
 
-// Typechecking props for the Header
-Header.propTypes = {
-    children: PropTypes.node,
-};
-
-export default Header;
+export default Profile;

@@ -33,127 +33,123 @@ import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 
-
-
 // @mui icons
 import Icon from "@mui/material/Icon";
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import BusinessIcon from '@mui/icons-material/Business';
-import SchoolIcon from '@mui/icons-material/School';
-import EventIcon from '@mui/icons-material/Event';
-import LogoutIcon from '@mui/icons-material/Logout';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import BusinessIcon from "@mui/icons-material/Business";
+import SchoolIcon from "@mui/icons-material/School";
+import EventIcon from "@mui/icons-material/Event";
+import LogoutIcon from "@mui/icons-material/Logout";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import Logout from "LogOut";
-
-
 
 const routes = [
     {
-    type: "collapse",
-    name: "Profile",
-    key: "profile",
-    icon: <Icon fontSize="small">person</Icon>,
-    route: "/profile",
-    component: <Profile />,
-  },
-  {
-    type: "collapse",
-    name: "Dashboard",
-    key: "dashboard",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/dashboard",
-    component: <Dashboard />,
-  },
-  {
-    type: "collapse",
-    name: "Students",
-    key: "students",
-    icon: <AccountBoxIcon fontSize="small"/>,
-    route: "/students",
-    component: <Students />,
-  },
-   {
-    type: "collapse",
-    name: "Staff",
-    key: "staff",
-    icon: <PeopleAltIcon fontSize="small"/>,
-    route: "/staff",
-    component: <Staff />,
-  },
+        type: "collapse",
+        name: "Profile",
+        key: "profile",
+        icon: <Icon fontSize="small">person</Icon>,
+        route: "/profile",
+        component: <Profile />,
+    },
     {
-    type: "collapse",
-    name: "Offices",
-    key: "offices",
-    icon: <BusinessIcon fontSize="small"/>,
-    route: "/offices",
-    component: <Offices />,
-  },
-  {
-    type: "collapse",
-    name: "Classes",
-    key: "classes",
-    icon: <SchoolIcon fontSize="small"/>,
-    route: "/classes",
-    component: <Tables />,
-  },
-  {
-    type: "collapse",
-    name: "Class Schedules",
-    key: "class-schedules",
-    icon: <CalendarTodayIcon fontSize="small"/>,
-    route: "/class-schedules",
-    component: <Tables />,
-  },
-  {
-    type: "collapse",
-    name: "Events",
-    key: "events",
-    icon: <EventIcon fontSize="small"/>,
-    route: "/events",
-    component: <Tables />,
-  },
-  {
-    type: "collapse",
-    name: "Accountancy",
-    key: "accountancy",
-    icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/accountancy",
-    component: <Billing />,
-  },
-  {
-    type: "collapse",
-    name: "Notifications",
-    key: "notifications",
-    icon: <Icon fontSize="small">notifications</Icon>,
-    route: "/notifications",
-    component: <Notifications />,
-  },
+        type: "collapse",
+        name: "Dashboard",
+        key: "dashboard",
+        icon: <Icon fontSize="small">dashboard</Icon>,
+        route: "/dashboard",
+        component: <Dashboard />,
+    },
+    {
+        type: "collapse",
+        name: "Students",
+        key: "students",
+        icon: <AccountBoxIcon fontSize="small" />,
+        route: "/students",
+        component: <Students />,
+    },
+    {
+        type: "collapse",
+        name: "Staff",
+        key: "staff",
+        icon: <PeopleAltIcon fontSize="small" />,
+        route: "/staff",
+        component: <Staff />,
+    },
+    {
+        type: "collapse",
+        name: "Offices",
+        key: "offices",
+        icon: <BusinessIcon fontSize="small" />,
+        route: "/offices",
+        component: <Offices />,
+    },
+    {
+        type: "collapse",
+        name: "Classes",
+        key: "classes",
+        icon: <SchoolIcon fontSize="small" />,
+        route: "/classes",
+        component: <Tables />,
+    },
+    {
+        type: "collapse",
+        name: "Class Schedules",
+        key: "class-schedules",
+        icon: <CalendarTodayIcon fontSize="small" />,
+        route: "/class-schedules",
+        component: <Tables />,
+    },
+    {
+        type: "collapse",
+        name: "Events",
+        key: "events",
+        icon: <EventIcon fontSize="small" />,
+        route: "/events",
+        component: <Tables />,
+    },
+    {
+        type: "collapse",
+        name: "Accountancy",
+        key: "accountancy",
+        icon: <Icon fontSize="small">receipt_long</Icon>,
+        route: "/accountancy",
+        component: <Billing />,
+    },
+    {
+        type: "collapse",
+        name: "Notifications",
+        key: "notifications",
+        icon: <Icon fontSize="small">notifications</Icon>,
+        route: "/notifications",
+        component: <Notifications />,
+    },
 
-  {
-    type: "collapse",
-    name: "Sign In",
-    key: "sign-in",
-    icon: <Icon fontSize="small">login</Icon>,
-    route: "/authentication/sign-in",
-    component: <SignIn />,
-  },
-  {
-    type: "collapse",
-    name: "Sign Up",
-    key: "sign-up",
-    icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/authentication/sign-up",
-    component: <SignUp />,
-  },
-  {
-    type: "collapse",
-    name: "Logout",
-    key: "logout",
-    icon: <LogoutIcon fontSize="small"/>,
-    route: "/authentication/logout",
-    component: <Logout/>,
-  },
+    {
+        type: "collapse",
+        name: "Sign In",
+        key: "sign-in",
+        icon: <Icon fontSize="small">login</Icon>,
+        route: "/authentication/sign-in",
+        component: <SignIn />,
+    },
+    {
+        type: "collapse",
+        name: "Sign Up",
+        key: "sign-up",
+        icon: <Icon fontSize="small">assignment</Icon>,
+        route: "/authentication/sign-up",
+        component: <SignUp />,
+    },
+    {
+        type: "collapse",
+        name: "Logout",
+        key: "logout",
+        icon: <LogoutIcon fontSize="small" />,
+        route: "/authentication/logout",
+        component: <Logout />,
+    },
 ];
 
 export default routes;

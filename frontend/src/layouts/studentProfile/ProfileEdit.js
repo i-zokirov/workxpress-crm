@@ -1,51 +1,62 @@
-import React from "react";
+import React, { useState } from "react";
 import Modal from "components/MUIModal";
 import MDTypography from "components/MDTypography";
 import MDBox from "components/MDBox";
 import MDAvatar from "components/MDAvatar";
-import colors from "assets/theme/base/colors";
 import MDInput from "components/MDInput";
 import { Grid, Container } from "@mui/material";
-
-// @mui icons
-import FacebookIcon from "@mui/icons-material/Facebook";
-import InstagramIcon from "@mui/icons-material/Instagram";
-import TelegramIcon from "@mui/icons-material/Telegram";
 import MDButton from "components/MDButton";
-
+import Select from "components/Select";
 // formik
 import { Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserProfile } from "redux/actions/userActions";
+import { updateStudentProfile } from "redux/actions/studentActions";
+import { deleteStudentProfile } from "redux/actions/studentActions";
 
-const iconBoxStyle = {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "50px",
-    color: "white",
-    fontSize: "35px",
-};
+const statuses = [
+    {
+        label: "Student",
+        value: "Student",
+    },
+    {
+        label: "New Applicant",
+        value: "New Applicant",
+    },
+    {
+        label: "Alumni",
+        value: "Alumni",
+    },
+    {
+        label: "Graduated",
+        value: "Graduated",
+    },
+    {
+        label: "Drop-out",
+        value: "Drop-out",
+    },
+];
 
-const ProfileEdit = ({ open, onClose, user }) => {
-    const { socialMediaColors } = colors;
+const ProfileEdit = ({ open, onClose, student }) => {
+    const [openNestedModal, setOpenNestedModal] = useState(false);
+
+    const handleNestedModalChange = () => {
+        setOpenNestedModal((prev) => !prev);
+    };
     const initialValues = {
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        birthdate: user.birthdate,
-        mobilePhoneNumber: user.mobilePhoneNumber ? user.mobilePhoneNumber : "",
-        homeTelephoneNumber: user.homeTelephoneNumber
-            ? user.homeTelephoneNumber
+        name: student.name,
+        email: student.email,
+        birthdate: student.birthdate,
+        status: student.status,
+        mobilePhoneNumber: student.mobilePhoneNumber
+            ? student.mobilePhoneNumber
             : "",
-        bio: user.bio ? user.bio : "",
-        telegram: user.telegram ? user.telegram : "",
-        facebook: user.facebook ? user.facebook : "",
-        instagram: user.instagram ? user.instagram : "",
-        street: user.address ? user.address.street : "",
-        suite: user.address ? user.address.suite : "",
-        postalCode: user.address ? user.address.postalCode : "",
-        city: user.address ? user.address.city : "",
+        homeTelephoneNumber: student.homeTelephoneNumber
+            ? student.homeTelephoneNumber
+            : "",
+        street: student.address ? student.address.street : "",
+        suite: student.address ? student.address.suite : "",
+        postalCode: student.address ? student.address.postalCode : "",
+        city: student.address ? student.address.city : "",
     };
 
     const dispatch = useDispatch();
@@ -55,23 +66,26 @@ const ProfileEdit = ({ open, onClose, user }) => {
             birthdate: values.birthdate,
             mobilePhoneNumber: values.mobilePhoneNumber,
             homeTelephoneNumber: values.homeTelephoneNumber,
-            bio: values.bio,
-            telegram: values.telegram,
-            facebook: values.facebook,
-            instagram: values.instagram,
             address: {
                 street: values.street,
                 suite: values.suite,
                 postalCode: values.postalCode,
                 city: values.city,
             },
+            status: values.status,
         };
-        dispatch(updateUserProfile(reqBody));
+        dispatch(updateStudentProfile(reqBody, student._id));
         setSubmitting(false);
         onClose();
     };
 
+    const handleDeleteStudentProfile = () => {
+        dispatch(deleteStudentProfile(student._id));
+    };
+
     const { loading } = useSelector((state) => state.updateProfile);
+
+    const user = useSelector((state) => state.auth.userData);
 
     return (
         <Modal
@@ -80,6 +94,53 @@ const ProfileEdit = ({ open, onClose, user }) => {
             title="profile-edit"
             description="edit profile data"
         >
+            <Modal
+                open={openNestedModal}
+                onClose={handleNestedModalChange}
+                title="HEADS-UP!"
+                description="confirm action"
+            >
+                <MDBox>
+                    <MDTypography>
+                        Are you sure you would like to delete this student
+                        account ?
+                    </MDTypography>
+                    <MDTypography>
+                        Note: You will not be able to recover this data!
+                    </MDTypography>
+                </MDBox>
+                <MDBox
+                    sx={{
+                        marginTop: "20px",
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        alignItems: "right",
+                    }}
+                >
+                    <MDBox sx={{ paddingRight: "5px" }}>
+                        <MDButton
+                            variant="gradient"
+                            color="primary"
+                            size="medium"
+                            type="submit"
+                            disabled={loading}
+                            onClick={handleDeleteStudentProfile}
+                        >
+                            Yes
+                        </MDButton>
+                    </MDBox>
+                    <MDBox>
+                        <MDButton
+                            variant="gradient"
+                            color="secondary"
+                            size="medium"
+                            onClick={handleNestedModalChange}
+                        >
+                            No
+                        </MDButton>
+                    </MDBox>
+                </MDBox>
+            </Modal>
             <Formik initialValues={initialValues} onSubmit={handleFormSubmit}>
                 {({
                     values,
@@ -130,17 +191,7 @@ const ProfileEdit = ({ open, onClose, user }) => {
                                     style={{ width: "100%" }}
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6} xl={6}>
-                                <MDInput
-                                    type="text"
-                                    label="Role"
-                                    onChange={handleChange}
-                                    name="role"
-                                    value={values.role}
-                                    disabled
-                                    style={{ width: "100%" }}
-                                />
-                            </Grid>
+
                             <Grid item xs={12} md={6} xl={6}>
                                 <MDInput
                                     type="date"
@@ -152,6 +203,17 @@ const ProfileEdit = ({ open, onClose, user }) => {
                                     required
                                 />
                             </Grid>
+
+                            <Grid item xs={12} md={6} xl={6}>
+                                <Select
+                                    label="Status"
+                                    onChange={handleChange}
+                                    name="status"
+                                    value={values.status}
+                                    options={statuses}
+                                />
+                            </Grid>
+
                             <Grid item xs={12} md={6} xl={6}>
                                 <MDInput
                                     type="tel"
@@ -217,74 +279,6 @@ const ProfileEdit = ({ open, onClose, user }) => {
                                     required
                                 />
                             </Grid>
-                            <Grid item xs={12} md={12} xl={12}>
-                                <MDInput
-                                    multiline
-                                    rows={4}
-                                    label="Profile bio"
-                                    onChange={handleChange}
-                                    name="bio"
-                                    value={values.bio}
-                                    style={{ width: "100%" }}
-                                    placeholder="Tell a little about yourself..."
-                                    required
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={12} xl={12}>
-                                <MDBox
-                                    color={socialMediaColors.telegram.main}
-                                    borderRadius="50%"
-                                    sx={iconBoxStyle}
-                                >
-                                    <TelegramIcon />
-                                </MDBox>
-                                <MDInput
-                                    variant="standard"
-                                    type="url"
-                                    onChange={handleChange}
-                                    name="telegram"
-                                    value={values.telegram}
-                                    label="Telegram URL"
-                                    style={{ width: "100%" }}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={12} xl={12}>
-                                <MDBox
-                                    color={socialMediaColors.facebook.main}
-                                    borderRadius="50%"
-                                    sx={iconBoxStyle}
-                                >
-                                    <FacebookIcon />
-                                </MDBox>
-                                <MDInput
-                                    variant="standard"
-                                    type="url"
-                                    onChange={handleChange}
-                                    name="facebook"
-                                    value={values.facebook}
-                                    label="Facebook URL"
-                                    style={{ width: "100%" }}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={12} xl={12}>
-                                <MDBox
-                                    color={socialMediaColors.instagram.main}
-                                    borderRadius="50%"
-                                    sx={iconBoxStyle}
-                                >
-                                    <InstagramIcon />
-                                </MDBox>
-                                <MDInput
-                                    variant="standard"
-                                    type="url"
-                                    onChange={handleChange}
-                                    name="instagram"
-                                    value={values.instagram}
-                                    label="Instagram URL"
-                                    style={{ width: "100%" }}
-                                />
-                            </Grid>
                         </Grid>
 
                         <Container
@@ -306,6 +300,19 @@ const ProfileEdit = ({ open, onClose, user }) => {
                                     Save
                                 </MDButton>
                             </MDBox>
+                            {user.role === "Administrator" && (
+                                <MDBox sx={{ paddingRight: "5px" }}>
+                                    <MDButton
+                                        variant="gradient"
+                                        color="warning"
+                                        size="medium"
+                                        disabled={loading}
+                                        onClick={handleNestedModalChange}
+                                    >
+                                        Delete
+                                    </MDButton>
+                                </MDBox>
+                            )}
                             <MDBox>
                                 <MDButton
                                     variant="gradient"

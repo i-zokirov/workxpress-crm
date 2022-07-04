@@ -145,6 +145,7 @@ export const updateSingleUser = asyncHandler(async (req, res) => {
                 : user.homeTelephoneNumber;
             user.image = req.body.image ? req.body.image : user.image;
             user.bio = req.body.bio;
+            user.address = req.body.address;
             user.telegram = req.body.telegram;
             user.facebook = req.body.facebook;
             user.instagram = req.body.instagram;
