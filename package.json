@@ -10,7 +10,8 @@
         "client": "npm start --prefix frontend",
         "dev": "concurrently \"npm run server\" \"npm run client\"",
         "data:seedStudents": "node backend/seeds/seedStudents",
-        "data:seedOffices": "node backend/seeds/seedOffices"
+        "data:seedOffices": "node backend/seeds/seedOffices",
+        "data:seedClasses": "node backend/seeds/seedClasses"
     },
     "author": "Ikboljon Zokirov",
     "license": "ISC",

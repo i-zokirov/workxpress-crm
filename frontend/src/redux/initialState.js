@@ -1,25 +1,28 @@
 // userData from localStorage
-const userData = localStorage.getItem("userData") ? JSON.parse(localStorage.getItem("userData")) : {}
-
+const userData = localStorage.getItem("userData")
+    ? JSON.parse(localStorage.getItem("userData"))
+    : {};
 
 const initialState = {
     auth: {
         userData,
-        authenticated: userData.token ? true : false
+        authenticated: userData.token ? true : false,
     },
     students: {
-        list: []
+        list: [],
     },
-    staff:{
-        list: []
+    staff: {
+        list: [],
     },
     offices: {
-        list: []
+        list: [],
+    },
+    classList: {
+        data: [],
     },
     profile: {
-        data: null
+        data: null,
     },
-}
+};
 
-
-export default initialState
+export default initialState;

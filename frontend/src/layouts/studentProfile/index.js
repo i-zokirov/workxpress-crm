@@ -16,6 +16,8 @@ import Card from "@mui/material/Card";
 import { LinearProgress, Box, Grid, Divider } from "@mui/material";
 import getDateAndTime from "utils/getDateAndTime";
 import ProfileEdit from "./ProfileEdit";
+import ProfileNotes from "./ProfileNotes";
+import { loadClassList } from "redux/actions/classActions";
 
 const StudentProfile = () => {
     const [showEditWindow, setShowEditWindow] = useState(false);
@@ -27,6 +29,7 @@ const StudentProfile = () => {
     );
 
     const deleteProfile = useSelector((state) => state.deleteStudentProfile);
+    const classList = useSelector((state) => state.classList);
     const { studentId } = useParams();
     useEffect(() => {
         if (deleteProfile.success) {
@@ -38,53 +41,42 @@ const StudentProfile = () => {
         ) {
             dispatch(fetchStudentProfile(studentId));
         }
+
+        if (!classList.data.length) {
+            dispatch(loadClassList());
+        }
     }, [studentId, deleteProfile]);
 
     const handleEditWindowState = () => {
         setShowEditWindow((prev) => !prev);
     };
     return (
-        <DashboardLayout>
-            <DashboardNavbar />
-            <MDBox mb={2}>
-                {loading ? (
-                    <MDBox position="relative" mb={5}>
-                        <MDBox
-                            display="flex"
-                            alignItems="center"
-                            position="relative"
-                            minHeight="5.75rem"
-                            borderRadius="xl"
-                        />
-                        <Card
-                            sx={{
-                                position: "relative",
-                                mt: -8,
-                                mx: 3,
-                                py: 2,
-                                px: 2,
-                            }}
-                        >
-                            <Box sx={{ width: "100%" }}>
-                                <LinearProgress color="primary" />
-                            </Box>
-                        </Card>
-                    </MDBox>
-                ) : (
-                    data && (
+        <>
+            {loading ||
+                (classList.loading && (
+                    <LinearProgress
+                        color="primary"
+                        sx={{ width: "100%", overflow: "hidden" }}
+                    />
+                ))}
+            <DashboardLayout>
+                <DashboardNavbar />
+                <MDBox mb={2}>
+                    {data && classList.data && (
                         <Profile name={data.name} status={data.status}>
                             <MDBox mt={5} mb={3}>
                                 <ProfileEdit
                                     open={showEditWindow}
                                     student={data}
                                     onClose={handleEditWindowState}
+                                    classOptions={classList.data}
                                 />
                                 <Grid container spacing={1} sx={{}}>
                                     <Grid
                                         item
                                         xs={12}
-                                        md={6}
-                                        xl={4}
+                                        md={3}
+                                        xl={3}
                                         sx={{ display: "flex" }}
                                     >
                                         <Divider
@@ -112,9 +104,6 @@ const StudentProfile = () => {
                                                     ? data.registeredOffice
                                                           .officeName
                                                     : "",
-                                                teacher: data.currentTeacher
-                                                    ? data.currentTeacher.name
-                                                    : "",
                                                 registeredBy:
                                                     data.createdBy.name,
                                                 created: getDateAndTime(
@@ -135,17 +124,21 @@ const StudentProfile = () => {
                                             sx={{ mx: 0 }}
                                         />
                                     </Grid>
-                                    <Grid item xs={12} md={6} xl={4}>
-                                        <div>Hello</div>
+                                    <Grid item xs={12} md={9} xl={9}>
+                                        <ProfileNotes
+                                            title="Notes"
+                                            shadow={false}
+                                            student={data}
+                                        />
                                     </Grid>
                                 </Grid>
                             </MDBox>
                         </Profile>
-                    )
-                )}
-            </MDBox>
-            <Footer />
-        </DashboardLayout>
+                    )}
+                </MDBox>
+                <Footer />
+            </DashboardLayout>
+        </>
     );
 };
 

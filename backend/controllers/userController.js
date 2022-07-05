@@ -6,9 +6,16 @@ import generateToken from "../utils/generateToken.js";
 // @route:  GET /api/users
 // @access: PRIVATE && Admin
 export const getAllUsers = asyncHandler(async (req, res) => {
-    const users = await User.find({})
-        .select("-password")
-        .populate("registeredOffice", "officeName");
+    let users;
+    if (req.query.role) {
+        users = await User.find({ role: req.query.role })
+            .select("-password")
+            .populate("registeredOffice", "officeName");
+    } else {
+        users = await User.find({})
+            .select("-password")
+            .populate("registeredOffice", "officeName");
+    }
 
     if (users) {
         res.json(users);

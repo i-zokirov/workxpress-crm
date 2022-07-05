@@ -82,7 +82,8 @@ export const fetchStudentProfile = (studentId) => {
                     error.response && error.response.data.message
                         ? error.response.data.message
                         : error.message,
-                    "error"
+                    "error",
+                    false
                 )
             );
         }
@@ -116,7 +117,8 @@ export const updateStudentProfile = (reqBody, studentId) => {
                     error.response && error.response.data.message
                         ? error.response.data.message
                         : error.message,
-                    "error"
+                    "error",
+                    false
                 )
             );
         }

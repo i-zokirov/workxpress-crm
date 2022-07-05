@@ -4,7 +4,7 @@ import MDTypography from "components/MDTypography";
 import MDBox from "components/MDBox";
 import MDAvatar from "components/MDAvatar";
 import MDInput from "components/MDInput";
-import { Grid, Container } from "@mui/material";
+import { Grid, Container, Divider } from "@mui/material";
 import MDButton from "components/MDButton";
 import Select from "components/Select";
 // formik
@@ -12,6 +12,7 @@ import { Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { updateStudentProfile } from "redux/actions/studentActions";
 import { deleteStudentProfile } from "redux/actions/studentActions";
+import MultipleSelect from "components/MultiSelect";
 
 const statuses = [
     {
@@ -36,9 +37,29 @@ const statuses = [
     },
 ];
 
-const ProfileEdit = ({ open, onClose, student }) => {
-    const [openNestedModal, setOpenNestedModal] = useState(false);
+const extractClassOptions = (classes) => {
+    const options = [];
+    for (let cls of classes) {
+        options.push(cls._id);
+    }
+    return options;
+};
 
+const ProfileEdit = ({ open, onClose, student, classOptions }) => {
+    const [openNestedModal, setOpenNestedModal] = useState(false);
+    const [enrolledClasses, setEnrolledClasses] = useState(
+        extractClassOptions(student.enrolledClasses)
+    );
+
+    const handleClassChange = (event) => {
+        const {
+            target: { value },
+        } = event;
+        setEnrolledClasses(
+            // On autofill we get a stringified value.
+            typeof value === "string" ? value.split(",") : value
+        );
+    };
     const handleNestedModalChange = () => {
         setOpenNestedModal((prev) => !prev);
     };
@@ -73,6 +94,7 @@ const ProfileEdit = ({ open, onClose, student }) => {
                 city: values.city,
             },
             status: values.status,
+            enrolledClasses,
         };
         dispatch(updateStudentProfile(reqBody, student._id));
         setSubmitting(false);
@@ -277,6 +299,20 @@ const ProfileEdit = ({ open, onClose, student }) => {
                                     value={values.city}
                                     style={{ width: "100%" }}
                                     required
+                                />
+                            </Grid>
+                        </Grid>
+
+                        <Divider />
+
+                        <Grid container spacing={2} sx={{ marginTop: "2px" }}>
+                            <Grid item xs={12} md={12} xl={12}>
+                                <MultipleSelect
+                                    options={extractClassOptions(classOptions)}
+                                    handleChange={handleClassChange}
+                                    selected={enrolledClasses}
+                                    label="Enrolled Classes"
+                                    originalList={classOptions}
                                 />
                             </Grid>
                         </Grid>

@@ -14,9 +14,10 @@ import {
     studentProfileUpdateReducer,
     studentsReducer,
 } from "./reducers/studenReducers";
-import { staffReducer } from "./reducers/staffReducers";
+import { staffReducer, teachersReducer } from "./reducers/staffReducers";
 import { officesReducer } from "./reducers/officeReducers";
 import notificationReducer from "./reducers/notificationReducer";
+import { classListReducer } from "./reducers/classReducers";
 
 const middleware = [thunk];
 
@@ -27,10 +28,12 @@ const masterReducer = combineReducers({
     updateStudentProfile: studentProfileUpdateReducer,
     deleteStudentProfile: studentProfileDeleteReducer,
     staff: staffReducer,
+    teacherStaff: teachersReducer,
     offices: officesReducer,
     profile: userProfileReducer,
     updateProfile: updateProfileReducer,
     notification: notificationReducer,
+    classList: classListReducer,
 });
 
 const store = createStore(

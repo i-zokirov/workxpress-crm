@@ -7,7 +7,7 @@ export const deployNotification = (
     message,
     type,
     autodismiss = true,
-    milliseconds = 4000
+    milliseconds = 5000
 ) => {
     return (dispatch) => {
         dispatch({

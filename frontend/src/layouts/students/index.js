@@ -1,7 +1,7 @@
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import LinearProgress from '@mui/material/LinearProgress';
+import LinearProgress from "@mui/material/LinearProgress";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -18,69 +18,76 @@ import buildTableData from "layouts/students/data/buildTableData";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { loadStudentsList } from "redux/actions/studentActions";
-import { Container } from "@mui/material";
 
 function Tables() {
+    const [rows, setRows] = useState([]);
+    const [columns, setColumns] = useState([]);
+    const dispatch = useDispatch();
 
-  const [rows, setRows] = useState([])
-  const [columns, setColumns] = useState([])
-  const dispatch = useDispatch()
+    // dispatch request to load data when page loads
+    useEffect(() => {
+        if (!list.length) {
+            dispatch(loadStudentsList());
+        }
+    }, []);
 
-  // dispatch request to load data when page loads
-  useEffect(() => {
-    if(!list.length){
-      dispatch(loadStudentsList())
-    }
-  }, [])
+    // get data from redux
+    const { list, error, loading } = useSelector((state) => state.students);
 
-  // get data from redux
-  const {list, error, loading} = useSelector(state => state.students)
+    // keep track of students list
+    useEffect(() => {
+        const { columns, rows } = buildTableData(list);
+        setRows(rows);
+        setColumns(columns);
+    }, [list]);
 
-  // keep track of students list
-  useEffect(() => {
-    const { columns, rows } = buildTableData(list);
-    setRows(rows)
-    setColumns(columns)
-  },[list])
-
-
-  return (
-    <DashboardLayout>
-      <DashboardNavbar />
-      <MDBox pt={6} pb={3}>
-        <Grid container spacing={6}>
-          <Grid item xs={12}>
-            <Card>
-              <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor={error ? "error" : "info"}
-                borderRadius="lg"
-                coloredShadow={error ? "error" : "info"}
-              >
-                <MDTypography variant="h6" color="white">
-                  Students {error && `: ${error}`}
-                </MDTypography>
-              </MDBox>
-              <MDBox pt={3}>
-                { loading ? <Container maxWidth="sm"> <LinearProgress color="info"/> </Container>: list.length && <DataTable
-                  table={{ columns, rows }}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />}
-              </MDBox>
-            </Card>
-          </Grid>
-        </Grid>
-      </MDBox>
-      <Footer />
-    </DashboardLayout>
-  );
+    return (
+        <>
+            {loading && (
+                <LinearProgress
+                    color="primary"
+                    sx={{ width: "100%", overflow: "hidden" }}
+                />
+            )}
+            <DashboardLayout>
+                <DashboardNavbar />
+                <MDBox pt={6} pb={3}>
+                    <Grid container spacing={6}>
+                        <Grid item xs={12}>
+                            <Card>
+                                <MDBox
+                                    mx={2}
+                                    mt={-3}
+                                    py={3}
+                                    px={2}
+                                    variant="gradient"
+                                    bgColor={error ? "error" : "info"}
+                                    borderRadius="lg"
+                                    coloredShadow={error ? "error" : "info"}
+                                >
+                                    <MDTypography variant="h6" color="white">
+                                        Students {error && `: ${error}`}
+                                    </MDTypography>
+                                </MDBox>
+                                <MDBox pt={3}>
+                                    {list.length && (
+                                        <DataTable
+                                            table={{ columns, rows }}
+                                            isSorted={false}
+                                            entriesPerPage={false}
+                                            showTotalEntries={false}
+                                            noEndBorder
+                                        />
+                                    )}
+                                </MDBox>
+                            </Card>
+                        </Grid>
+                    </Grid>
+                </MDBox>
+                <Footer />
+            </DashboardLayout>
+        </>
+    );
 }
 
 export default Tables;
