@@ -28,9 +28,7 @@ const StudentProfile = () => {
         (state) => state.studentProfile
     );
 
-    console.log(loading);
-
-    const deleteProfile = useSelector((state) => state.deleteStudentProfile);
+     const deleteProfile = useSelector((state) => state.deleteStudentProfile);
     const classList = useSelector((state) => state.classList);
     const { studentId } = useParams();
     useEffect(() => {
@@ -55,11 +53,12 @@ const StudentProfile = () => {
     return (
         <>
             {loading && (
-                    <LinearProgress
-                        color="primary"
-                        sx={{ width: "100%", overflow: "hidden" }}
-                    />
-                )}
+                <LinearProgress
+                    color="primary"
+                    sx={{ width: "100%", overflow: "hidden" }}
+                />
+            )}
+
             <DashboardLayout>
                 <DashboardNavbar />
                 <MDBox mb={2}>

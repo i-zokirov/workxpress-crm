@@ -17,7 +17,7 @@ import { updateStudentProfile } from "redux/actions/studentActions";
 import getDateAndTime from "utils/getDateAndTime";
 
 const handleSort = (a, b) => {
-    return a.createdAt - b.createdAt;
+    return new Date(b.createdAt) - new Date(a.createdAt);
 };
 const ProfileNotes = ({ title, info, action, shadow, student }) => {
     const dispatch = useDispatch();
@@ -33,6 +33,7 @@ const ProfileNotes = ({ title, info, action, shadow, student }) => {
         dispatch(updateStudentProfile(reqBody, student._id));
     };
     const updates = student.updateHistory.sort(handleSort);
+
     return (
         <Card sx={{ height: "100%", boxShadow: !shadow && "none" }}>
             <MDBox
@@ -131,7 +132,11 @@ const ProfileNotes = ({ title, info, action, shadow, student }) => {
                                     fontWeight="regular"
                                     color="text"
                                 >
-                                    {update.body}
+                                    <div
+                                        dangerouslySetInnerHTML={{
+                                            __html: update.body,
+                                        }}
+                                    ></div>
                                 </MDTypography>
                             </MDBox>
                         </Card>

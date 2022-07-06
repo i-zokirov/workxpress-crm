@@ -66,19 +66,20 @@ export const getSingleStudent = asyncHandler(async (req, res) => {
 // @access: PRIVATE
 export const updateStudent = asyncHandler(async (req, res) => {
     const student = await Student.findById(req.params.studentId);
+
+    const previousStudentObject = {};
+
+    previousStudentObject.birthdate = student.birthdate;
+    previousStudentObject.mobilePhoneNumber = student.mobilePhoneNumber;
+    previousStudentObject.homeTelephoneNumber = student.homeTelephoneNumber;
+    previousStudentObject.address = student.address;
+    previousStudentObject.status = student.status;
+    previousStudentObject.enrolledClasses = student.enrolledClasses;
+
     if (student) {
-        student.name = req.body.name ? req.body.name : student.name;
-        student.lastName = req.body.lastName
-            ? req.body.lastName
-            : student.lastName;
-        student.firstName = req.body.firstName
-            ? req.body.firstName
-            : student.firstName;
         student.birthdate = req.body.birthdate
             ? req.body.birthdate
             : student.birthdate;
-        student.gender = req.body.gender ? req.body.gender : student.gender;
-        student.email = req.body.email ? req.body.email : student.email;
         student.mobilePhoneNumber = req.body.mobilePhoneNumber
             ? req.body.mobilePhoneNumber
             : student.mobilePhoneNumber;
@@ -138,6 +139,92 @@ export const updateStudent = asyncHandler(async (req, res) => {
                     await item.save();
                 }
             }
+        }
+
+        const changes = [];
+        if (previousStudentObject.status !== student.status)
+            changes.push(
+                `Status was <i>${previousStudentObject.status} </i> - now <i> ${student.status} </i>`
+            );
+        if (previousStudentObject.birthdate !== student.birthdate)
+            changes.push(
+                `birthdate was <i>${previousStudentObject.birthdate} </i> - now <i> ${student.birthdate} </i>`
+            );
+        if (
+            previousStudentObject.mobilePhoneNumber !==
+            student.mobilePhoneNumber
+        )
+            changes.push(
+                `mobile number was <i>${previousStudentObject.mobilePhoneNumber} </i> - now <i> ${student.mobilePhoneNumber} </i>`
+            );
+        if (
+            previousStudentObject.homeTelephoneNumber !==
+            student.homeTelephoneNumber
+        )
+            changes.push(
+                `secondary Number was <i>${previousStudentObject.homeTelephoneNumber} </i> - now <i> ${student.homeTelephoneNumber} </i>`
+            );
+
+        if (previousStudentObject.address.street !== student.address.street)
+            changes.push(
+                `street address was <i>${previousStudentObject.address.street} </i> - now <i> ${student.address.street} </i>`
+            );
+        if (previousStudentObject.address.suite !== student.address.suite)
+            changes.push(
+                `suite  was <i>${previousStudentObject.address.suite} </i> - now <i> ${student.address.suite} </i>`
+            );
+        if (
+            previousStudentObject.address.postalCode !==
+            student.address.postalCode
+        )
+            changes.push(
+                `postal code  was <i>${previousStudentObject.address.postalCode} </i> - now <i> ${student.address.postalCode} </i>`
+            );
+        if (previousStudentObject.address.city !== student.address.city)
+            changes.push(
+                `city  was <i>${previousStudentObject.address.city} </i> - now <i>${student.address.city} </i>`
+            );
+
+        if (
+            previousStudentObject.enrolledClasses.join(".") !==
+            student.enrolledClasses.join(".")
+        ) {
+            const previouslyEnrolledClasses = [];
+            for (let item of previousStudentObject.enrolledClasses) {
+                const cls = await Class.findById(item).populate(
+                    "teacher",
+                    "name"
+                );
+                previouslyEnrolledClasses.push(
+                    `${cls.className} by ${cls.teacher.name}`
+                );
+            }
+
+            const currentlyEnrolledClasses = [];
+            for (let item of student.enrolledClasses) {
+                const cls = await Class.findById(item).populate(
+                    "teacher",
+                    "name"
+                );
+                currentlyEnrolledClasses.push(
+                    `${cls.className} by ${cls.teacher.name}`
+                );
+            }
+
+            changes.push(
+                `enrolled classes  <i>${previouslyEnrolledClasses.join(
+                    ", "
+                )} </i> changed to   <i>${currentlyEnrolledClasses.join(
+                    ", "
+                )}  </i>`
+            );
+        }
+
+        if (changes.length) {
+            student.updateHistory.push({
+                body: changes.join("\n"),
+                updatedBy: req.user._id,
+            });
         }
 
         await student.save();
