@@ -96,13 +96,47 @@ export const updateStudent = asyncHandler(async (req, res) => {
         if (req.body.enrolledClasses) {
             student.enrolledClasses = req.body.enrolledClasses;
 
+            // for each enrolled class, find class document and push student id
             for (let id of student.enrolledClasses) {
                 const cls = await Class.findById(id);
-
-                if (!cls.students.some((x) => x._id === student._id)) {
-                    cls.students.push(student._id);
+                if (cls.students.length) {
+                    if (
+                        !cls.students.some(
+                            (x) => x.toString() === student._id.toString()
+                        )
+                    ) {
+                        cls.students.push(student._id);
+                    }
+                } else {
+                    cls.students = [student._id];
                 }
+
                 await cls.save();
+            }
+
+            const allClassesStudentIsReferenced = await Class.find({
+                students: { $in: [student._id] },
+            });
+
+            const toBeDeleted = [];
+            for (let clsStudentReferenced of allClassesStudentIsReferenced) {
+                if (
+                    !student.enrolledClasses.some(
+                        (x) =>
+                            x._id.toString() ===
+                            clsStudentReferenced._id.toString()
+                    )
+                ) {
+                    toBeDeleted.push(clsStudentReferenced);
+                }
+            }
+
+            // if there are extracted items, find those classes, and remove student from students array
+            if (toBeDeleted.length) {
+                for (let item of toBeDeleted) {
+                    item.students.pull(student._id);
+                    await item.save();
+                }
             }
         }
 
