@@ -1,6 +1,7 @@
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
+import Icon from "@mui/material/Icon";
 import LinearProgress from "@mui/material/LinearProgress";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -18,20 +19,53 @@ import buildTableData from "layouts/students/data/buildTableData";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { loadStudentsList } from "redux/actions/studentActions";
+import ProfileCreate from "./ProfileCreate";
 
-function Tables() {
+import { loadClassList } from "redux/actions/classActions";
+import { useNavigate } from "react-router-dom";
+import { loadOfficeList } from "redux/actions/officeActions";
+
+const Students = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    // Handling create student window
+    const [openCreateStudentWindow, setOpenCreateStudentWindow] =
+        useState(false);
+
+    const handleCreateStudentWindowStateChange = () => {
+        setOpenCreateStudentWindow((prev) => !prev);
+    };
+    const classList = useSelector((state) => state.classList);
+    const offices = useSelector((state) => state.offices);
+    const createStudentProfile = useSelector(
+        (state) => state.createStudentProfile
+    );
+
+    useEffect(() => {
+        if (createStudentProfile.data) {
+            navigate(`/students/${createStudentProfile.data._id}`);
+        }
+    }, [createStudentProfile]);
+
+    // Handling students table data
     const [rows, setRows] = useState([]);
     const [columns, setColumns] = useState([]);
-    const dispatch = useDispatch();
 
     // dispatch request to load data when page loads
     useEffect(() => {
         if (!list.length) {
             dispatch(loadStudentsList());
         }
+        if (!classList.data.length) {
+            dispatch(loadClassList());
+        }
+        if (!offices.list.length) {
+            dispatch(loadOfficeList());
+        }
     }, []);
 
-    // get data from redux
+    // get students data from redux
     const { list, error, loading } = useSelector((state) => state.students);
 
     // keep track of students list
@@ -49,8 +83,14 @@ function Tables() {
                     sx={{ width: "100%", overflow: "hidden" }}
                 />
             )}
+            {createStudentProfile.loading && (
+                <LinearProgress
+                    color="primary"
+                    sx={{ width: "100%", overflow: "hidden" }}
+                />
+            )}
             <DashboardLayout>
-                <DashboardNavbar />
+                <DashboardNavbar useSettings={false} />
                 <MDBox pt={6} pb={3}>
                     <Grid container spacing={6}>
                         <Grid item xs={12}>
@@ -73,9 +113,9 @@ function Tables() {
                                     {list.length && (
                                         <DataTable
                                             table={{ columns, rows }}
-                                            isSorted={false}
-                                            entriesPerPage={false}
-                                            showTotalEntries={false}
+                                            isSorted={true}
+                                            entriesPerPage={true}
+                                            showTotalEntries={true}
                                             noEndBorder
                                         />
                                     )}
@@ -84,10 +124,41 @@ function Tables() {
                         </Grid>
                     </Grid>
                 </MDBox>
+
+                {classList.data && offices.list && (
+                    <ProfileCreate
+                        open={openCreateStudentWindow}
+                        onClose={handleCreateStudentWindowStateChange}
+                        classOptions={classList.data}
+                        officeOptions={offices.list}
+                    />
+                )}
+
                 <Footer />
             </DashboardLayout>
+            <MDBox
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                width="3.25rem"
+                height="3.25rem"
+                bgColor="linear-gradient(195deg, #49a3f1, #1A73E8)"
+                shadow="sm"
+                borderRadius="50%"
+                position="fixed"
+                right="2rem"
+                bottom="2rem"
+                zIndex={99}
+                color="white"
+                sx={{ cursor: "pointer" }}
+                onClick={handleCreateStudentWindowStateChange}
+            >
+                <Icon fontSize="small" color="inherit">
+                    add_circle_outline_icon
+                </Icon>
+            </MDBox>
         </>
     );
-}
+};
 
-export default Tables;
+export default Students;

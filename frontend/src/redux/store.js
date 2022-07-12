@@ -9,6 +9,7 @@ import {
     userProfileReducer,
 } from "./reducers/userReducers";
 import {
+    studentProfileCreateReducer,
     studentProfileDeleteReducer,
     studentProfileReducer,
     studentProfileUpdateReducer,
@@ -18,6 +19,7 @@ import { staffReducer, teachersReducer } from "./reducers/staffReducers";
 import { officesReducer } from "./reducers/officeReducers";
 import notificationReducer from "./reducers/notificationReducer";
 import { classListReducer } from "./reducers/classReducers";
+import dashboardStatsReducer from "./reducers/dashboardStatsReducer";
 
 const middleware = [thunk];
 
@@ -26,6 +28,7 @@ const masterReducer = combineReducers({
     students: studentsReducer,
     studentProfile: studentProfileReducer,
     updateStudentProfile: studentProfileUpdateReducer,
+    createStudentProfile: studentProfileCreateReducer,
     deleteStudentProfile: studentProfileDeleteReducer,
     staff: staffReducer,
     teacherStaff: teachersReducer,
@@ -34,6 +37,7 @@ const masterReducer = combineReducers({
     updateProfile: updateProfileReducer,
     notification: notificationReducer,
     classList: classListReducer,
+    dashboardStats: dashboardStatsReducer,
 });
 
 const store = createStore(

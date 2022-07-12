@@ -9,8 +9,12 @@ import userRouter from "./routers/userRoutes.js";
 import studentRouter from "./routers/studentRoutes.js";
 import officeRouter from "./routers/officeRoutes.js";
 import classRouter from "./routers/classRoutes.js";
+import statsRouter from "./routers/statsRoute.js";
+
+// TODO: COMMENT BEFORE DEPLOYING
 import dotenv from "dotenv";
 dotenv.config();
+// =============================
 
 const __dirname = path.resolve();
 
@@ -27,6 +31,7 @@ app.use("/api/users", userRouter);
 app.use("/api/students", studentRouter);
 app.use("/api/offices", officeRouter);
 app.use("/api/classes", classRouter);
+app.use("/api/stats", statsRouter);
 
 // ERROR HANDLERS
 app.use(notFound);

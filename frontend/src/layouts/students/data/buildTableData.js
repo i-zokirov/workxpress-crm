@@ -70,9 +70,15 @@ const buildTableData = (studentsList) => {
                 accessor: "registeredby",
                 align: "left",
             },
+            {
+                Header: "Registered branch",
+                accessor: "registeredBranch",
+                align: "left",
+            },
             { Header: "status", accessor: "status", align: "center" },
             { Header: "registered", accessor: "registered", align: "center" },
             { Header: "age", accessor: "age", align: "center" },
+
             { Header: "action", accessor: "action", align: "center" },
         ],
 
@@ -127,6 +133,15 @@ const buildTableData = (studentsList) => {
                     >
                         {new Date().getFullYear() -
                             student.birthdate.split("-")[0]}
+                    </MDTypography>
+                ),
+                registeredBranch: (
+                    <MDTypography
+                        variant="caption"
+                        color="text"
+                        fontWeight="medium"
+                    >
+                        {student.branch ? student.branch.officeName : "Not set"}
                     </MDTypography>
                 ),
                 action: (

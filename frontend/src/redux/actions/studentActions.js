@@ -8,6 +8,9 @@ import {
     STUDENT_PROFILE_UPDATE_REQUEST,
     STUDENT_PROFILE_UPDATE_SUCCESS,
     STUDENT_PROFILE_UPDATE_FAILURE,
+    STUDENT_PROFILE_CREATE_REQUEST,
+    STUDENT_PROFILE_CREATE_SUCCESS,
+    STUDENT_PROFILE_CREATE_FAILURE,
     STUDENT_PROFILE_DELETE_REQUEST,
     STUDENT_PROFILE_DELETE_SUCCESS,
     STUDENT_PROFILE_DELETE_FAILURE,
@@ -16,6 +19,7 @@ import axios from "axios";
 import baseUrl from "baseUrl";
 import { deployNotification } from "./notificationActions";
 import { STUDENT_PROFILE_DELETE_RESET } from "redux/constants/studentConstants";
+import { logoutUser } from "./userActions";
 
 export const loadStudentsList = () => {
     return async (dispatch, getState) => {
@@ -36,6 +40,9 @@ export const loadStudentsList = () => {
             dispatch({ type: STUDENTS_LIST_SUCCESS, payload: data });
             // dispatch({type: STUDENTS_LIST_FAILURE, payload: "data"})
         } catch (error) {
+            if (error.response.data.message === "jwt expired") {
+                dispatch(logoutUser());
+            }
             dispatch({
                 type: STUDENTS_LIST_FAILURE,
                 payload:
@@ -65,6 +72,9 @@ export const fetchStudentProfile = (studentId) => {
             );
             dispatch({ type: STUDENT_PROFILE_SUCCESS, payload: data });
         } catch (error) {
+            if (error.response.data.message === "jwt expired") {
+                dispatch(logoutUser());
+            }
             dispatch({
                 type: STUDENT_PROFILE_FAILURE,
                 payload:
@@ -72,11 +82,43 @@ export const fetchStudentProfile = (studentId) => {
                         ? error.response.data.message
                         : error.message,
             });
-            console.log(
-                error.response && error.response.data.message
-                    ? error.response.data.message
-                    : error.message
+            dispatch(
+                deployNotification(
+                    error.response && error.response.data.message
+                        ? error.response.data.message
+                        : error.message,
+                    "error",
+                    false
+                )
             );
+        }
+    };
+};
+
+export const createStudentProfile = (reqBody) => {
+    return async (dispatch, getState) => {
+        try {
+            dispatch({ type: STUDENT_PROFILE_CREATE_REQUEST });
+            const {
+                auth: { userData },
+            } = getState();
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userData.token}`,
+                },
+            };
+            const { data } = await axios.post(
+                `${baseUrl}/api/students/new`,
+                reqBody,
+                config
+            );
+            dispatch({ type: STUDENT_PROFILE_CREATE_SUCCESS, payload: data });
+            dispatch(deployNotification("Successfully created!", "success"));
+        } catch (error) {
+            if (error.response.data.message === "jwt expired") {
+                dispatch(logoutUser());
+            }
+            dispatch({ type: STUDENT_PROFILE_CREATE_FAILURE });
             dispatch(
                 deployNotification(
                     error.response && error.response.data.message
@@ -111,6 +153,9 @@ export const updateStudentProfile = (reqBody, studentId) => {
             dispatch(deployNotification("Successfully updated!", "success"));
             dispatch(fetchStudentProfile(studentId));
         } catch (error) {
+            if (error.response.data.message === "jwt expired") {
+                dispatch(logoutUser());
+            }
             dispatch({ type: STUDENT_PROFILE_UPDATE_FAILURE });
             dispatch(
                 deployNotification(
@@ -146,6 +191,9 @@ export const deleteStudentProfile = (studentId) => {
                 dispatch({ type: STUDENT_PROFILE_DELETE_RESET });
             }, 1);
         } catch (error) {
+            if (error.response.data.message === "jwt expired") {
+                dispatch(logoutUser());
+            }
             dispatch({ type: STUDENT_PROFILE_DELETE_FAILURE });
             dispatch(
                 deployNotification(

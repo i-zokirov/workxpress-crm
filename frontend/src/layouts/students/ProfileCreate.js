@@ -10,12 +10,9 @@ import Select from "components/Select";
 // formik
 import { Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { updateStudentProfile } from "redux/actions/studentActions";
-import { deleteStudentProfile } from "redux/actions/studentActions";
-import MultipleSelect from "components/MultiSelect";
+import { createStudentProfile } from "redux/actions/studentActions";
 
-// Material Dashboard 2 React contexts
-import { useMaterialUIController } from "context";
+import MultipleSelect from "components/MultiSelect";
 
 const statuses = [
     {
@@ -40,13 +37,20 @@ const statuses = [
     },
 ];
 
-const extractOfficeOptions = (offices) => {
-    const options = [];
-    for (let office of offices) {
-        options.push({ label: office.officeName, value: office._id });
-    }
-    return options;
-};
+const genderOptions = [
+    {
+        label: "Male",
+        value: "Male",
+    },
+    {
+        label: "Female",
+        value: "Female",
+    },
+    {
+        label: "Other",
+        value: "Other",
+    },
+];
 
 const extractClassOptions = (classes) => {
     const options = [];
@@ -56,19 +60,33 @@ const extractClassOptions = (classes) => {
     return options;
 };
 
-const ProfileEdit = ({
-    open,
-    onClose,
-    student,
-    classOptions,
-    officeOptions,
-}) => {
-    const [controller] = useMaterialUIController();
-    const { darkMode } = controller;
+const extractOfficeOptions = (offices) => {
+    const options = [];
+    for (let office of offices) {
+        options.push({ label: office.officeName, value: office._id });
+    }
+    return options;
+};
 
-    const [openNestedModal, setOpenNestedModal] = useState(false);
+const initialValues = {
+    firstName: "",
+    lastName: "",
+    gender: "",
+    email: "",
+    birthdate: "",
+    status: "New Applicant",
+    mobilePhoneNumber: "",
+    homeTelephoneNumber: "",
+    street: "",
+    suite: "",
+    postalCode: "",
+    city: "",
+    branch: "",
+};
+
+const ProfileCreate = ({ open, onClose, classOptions, officeOptions }) => {
     const [enrolledClasses, setEnrolledClasses] = useState(
-        extractClassOptions(student.enrolledClasses)
+        extractClassOptions([])
     );
 
     const handleClassChange = (event) => {
@@ -80,32 +98,19 @@ const ProfileEdit = ({
             typeof value === "string" ? value.split(",") : value
         );
     };
-    const handleNestedModalChange = () => {
-        setOpenNestedModal((prev) => !prev);
-    };
-    const initialValues = {
-        name: student.name,
-        email: student.email,
-        birthdate: student.birthdate,
-        status: student.status,
-        mobilePhoneNumber: student.mobilePhoneNumber
-            ? student.mobilePhoneNumber
-            : "",
-        homeTelephoneNumber: student.homeTelephoneNumber
-            ? student.homeTelephoneNumber
-            : "",
-        street: student.address ? student.address.street : "",
-        suite: student.address ? student.address.suite : "",
-        postalCode: student.address ? student.address.postalCode : "",
-        city: student.address ? student.address.city : "",
-        branch: student.branch ? student.branch._id : "",
-    };
+
+    const { loading } = useSelector((state) => state.updateProfile);
 
     const dispatch = useDispatch();
 
+    const user = useSelector((state) => state.auth.userData);
+
     const handleFormSubmit = (values, { setSubmitting }) => {
         const reqBody = {
+            name: `${values.firstName} ${values.lastName}`,
+            email: values.email,
             birthdate: values.birthdate,
+            gender: values.gender,
             mobilePhoneNumber: values.mobilePhoneNumber,
             homeTelephoneNumber: values.homeTelephoneNumber,
             address: {
@@ -116,75 +121,20 @@ const ProfileEdit = ({
             },
             status: values.status,
             enrolledClasses,
-            branch: values.branch,
+            createdBy: user._id,
         };
-        dispatch(updateStudentProfile(reqBody, student._id));
+        dispatch(createStudentProfile(reqBody));
         setSubmitting(false);
         onClose();
     };
-
-    const handleDeleteStudentProfile = () => {
-        dispatch(deleteStudentProfile(student._id));
-    };
-
-    const { loading } = useSelector((state) => state.updateProfile);
-
-    const user = useSelector((state) => state.auth.userData);
 
     return (
         <Modal
             open={open}
             onClose={onClose}
-            title="profile-edit"
-            description="edit profile data"
+            title="Create Student"
+            description="Create new Student record"
         >
-            <Modal
-                open={openNestedModal}
-                onClose={handleNestedModalChange}
-                title="HEADS-UP!"
-                description="confirm action"
-            >
-                <MDBox>
-                    <MDTypography>
-                        Are you sure you would like to delete this student
-                        account ?
-                    </MDTypography>
-                    <MDTypography>
-                        Note: You will not be able to recover this data!
-                    </MDTypography>
-                </MDBox>
-                <MDBox
-                    sx={{
-                        marginTop: "20px",
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        alignItems: "right",
-                    }}
-                >
-                    <MDBox sx={{ paddingRight: "5px" }}>
-                        <MDButton
-                            variant="gradient"
-                            color="primary"
-                            size="medium"
-                            type="submit"
-                            disabled={loading}
-                            onClick={handleDeleteStudentProfile}
-                        >
-                            Yes
-                        </MDButton>
-                    </MDBox>
-                    <MDBox>
-                        <MDButton
-                            variant="gradient"
-                            color="secondary"
-                            size="medium"
-                            onClick={handleNestedModalChange}
-                        >
-                            No
-                        </MDButton>
-                    </MDBox>
-                </MDBox>
-            </Modal>
             <Formik initialValues={initialValues} onSubmit={handleFormSubmit}>
                 {({
                     values,
@@ -201,7 +151,7 @@ const ProfileEdit = ({
                             fontWeight="medium"
                             textTransform="capitalize"
                         >
-                            Edit profile data
+                            Create new Student
                         </MDTypography>
 
                         <MDBox>
@@ -215,27 +165,27 @@ const ProfileEdit = ({
                             <Grid item xs={12} md={6} xl={6}>
                                 <MDInput
                                     type="text"
-                                    label="Full name"
+                                    label="First Name"
                                     onChange={handleChange}
-                                    name="name"
-                                    value={values.name}
-                                    disabled
+                                    name="firstName"
+                                    value={values.firstName}
+                                    required
                                     style={{
                                         width: "100%",
-                                        bgColor: "transparent",
                                     }}
                                 />
                             </Grid>
-
                             <Grid item xs={12} md={6} xl={6}>
                                 <MDInput
-                                    type="email"
-                                    label="Email"
+                                    type="text"
+                                    label="Last Name"
                                     onChange={handleChange}
-                                    name="email"
-                                    value={values.email}
-                                    disabled
-                                    style={{ width: "100%" }}
+                                    name="lastName"
+                                    value={values.lastName}
+                                    required
+                                    style={{
+                                        width: "100%",
+                                    }}
                                 />
                             </Grid>
 
@@ -253,11 +203,35 @@ const ProfileEdit = ({
 
                             <Grid item xs={12} md={6} xl={6}>
                                 <Select
+                                    label="Gender"
+                                    onChange={handleChange}
+                                    name="gender"
+                                    value={values.gender}
+                                    options={genderOptions}
+                                    required
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6} xl={6}>
+                                <MDInput
+                                    type="email"
+                                    label="Email"
+                                    onChange={handleChange}
+                                    name="email"
+                                    value={values.email}
+                                    style={{ width: "100%" }}
+                                    required
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6} xl={6}>
+                                <Select
                                     label="Status"
                                     onChange={handleChange}
                                     name="status"
                                     value={values.status}
                                     options={statuses}
+                                    required
                                 />
                             </Grid>
 
@@ -347,7 +321,7 @@ const ProfileEdit = ({
                                     options={extractClassOptions(classOptions)}
                                     handleChange={handleClassChange}
                                     selected={enrolledClasses}
-                                    label="Enrolled Classes"
+                                    label="Enroll to Classes"
                                     originalList={classOptions}
                                 />
                             </Grid>
@@ -372,19 +346,6 @@ const ProfileEdit = ({
                                     Save
                                 </MDButton>
                             </MDBox>
-                            {user.role === "Administrator" && (
-                                <MDBox sx={{ paddingRight: "5px" }}>
-                                    <MDButton
-                                        variant="gradient"
-                                        color="warning"
-                                        size="medium"
-                                        disabled={loading}
-                                        onClick={handleNestedModalChange}
-                                    >
-                                        Delete
-                                    </MDButton>
-                                </MDBox>
-                            )}
                             <MDBox>
                                 <MDButton
                                     variant="gradient"
@@ -403,4 +364,4 @@ const ProfileEdit = ({
     );
 };
 
-export default ProfileEdit;
+export default ProfileCreate;

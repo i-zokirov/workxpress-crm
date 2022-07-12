@@ -1,16 +1,17 @@
 import axios from "axios";
 import baseUrl from "baseUrl";
 import {
-    CLASS_LIST_REQUEST,
-    CLASS_LIST_SUCCESS,
-    CLASS_LIST_FAILURE,
-} from "redux/constants/classConstants";
+    DASHBOARD_STATS_REQUEST,
+    DASHBOARD_STATS_SUCCESS,
+    DASHBOARD_STATS_FAILURE,
+} from "redux/constants/dashboardStatsConstants";
 import { deployNotification } from "./notificationActions";
 import { logoutUser } from "./userActions";
-export const loadClassList = () => {
+
+export const loadDashboardStats = () => {
     return async (dispatch, getState) => {
         try {
-            dispatch({ type: CLASS_LIST_REQUEST });
+            dispatch({ type: DASHBOARD_STATS_REQUEST });
             const {
                 auth: { userData },
             } = getState();
@@ -19,14 +20,14 @@ export const loadClassList = () => {
                     Authorization: `Bearer ${userData.token}`,
                 },
             };
-            const { data } = await axios.get(`${baseUrl}/api/classes`, config);
-            dispatch({ type: CLASS_LIST_SUCCESS, payload: data });
+            const { data } = await axios.get(`${baseUrl}/api/stats`, config);
+            dispatch({ type: DASHBOARD_STATS_SUCCESS, payload: data });
         } catch (error) {
             if (error.response.data.message === "jwt expired") {
                 dispatch(logoutUser());
             }
             dispatch({
-                type: CLASS_LIST_FAILURE,
+                type: DASHBOARD_STATS_FAILURE,
                 payload:
                     error.response && error.response.data.message
                         ? error.response.data.message
@@ -37,7 +38,8 @@ export const loadClassList = () => {
                     error.response && error.response.data.message
                         ? error.response.data.message
                         : error.message,
-                    "error"
+                    "error",
+                    true
                 )
             );
         }

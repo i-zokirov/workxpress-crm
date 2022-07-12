@@ -18,6 +18,15 @@ import getDateAndTime from "utils/getDateAndTime";
 import ProfileEdit from "./ProfileEdit";
 import ProfileNotes from "./ProfileNotes";
 import { loadClassList } from "redux/actions/classActions";
+import { loadOfficeList } from "redux/actions/officeActions";
+
+const getEnrolledClasses = (enrolledClassesArray) => {
+    const classes = [];
+    for (let cls of enrolledClassesArray) {
+        classes.push(`${cls.className} by ${cls.teacher.name}`);
+    }
+    return classes.join(", ");
+};
 
 const StudentProfile = () => {
     const [showEditWindow, setShowEditWindow] = useState(false);
@@ -28,8 +37,9 @@ const StudentProfile = () => {
         (state) => state.studentProfile
     );
 
-     const deleteProfile = useSelector((state) => state.deleteStudentProfile);
+    const deleteProfile = useSelector((state) => state.deleteStudentProfile);
     const classList = useSelector((state) => state.classList);
+    const offices = useSelector((state) => state.offices);
     const { studentId } = useParams();
     useEffect(() => {
         if (deleteProfile.success) {
@@ -44,6 +54,9 @@ const StudentProfile = () => {
 
         if (!classList.data.length) {
             dispatch(loadClassList());
+        }
+        if (!offices.list.length) {
+            dispatch(loadOfficeList());
         }
     }, [studentId, deleteProfile]);
 
@@ -62,7 +75,7 @@ const StudentProfile = () => {
             <DashboardLayout>
                 <DashboardNavbar />
                 <MDBox mb={2}>
-                    {data && classList.data && (
+                    {data && classList.data && offices.list && (
                         <Profile name={data.name} status={data.status}>
                             <MDBox mt={5} mb={3}>
                                 <ProfileEdit
@@ -70,6 +83,7 @@ const StudentProfile = () => {
                                     student={data}
                                     onClose={handleEditWindowState}
                                     classOptions={classList.data}
+                                    officeOptions={offices.list}
                                 />
                                 <Grid container spacing={1} sx={{}}>
                                     <Grid
@@ -100,12 +114,15 @@ const StudentProfile = () => {
                                                 location: data.address
                                                     ? `${data.address.postalCode}, ${data.address.city}`
                                                     : ``,
-                                                branch: data.registeredOffice
-                                                    ? data.registeredOffice
-                                                          .officeName
+                                                registeredBranch: data.branch
+                                                    ? data.branch.officeName
                                                     : "",
                                                 registeredBy:
                                                     data.createdBy.name,
+                                                enrolledClasses:
+                                                    getEnrolledClasses(
+                                                        data.enrolledClasses
+                                                    ),
                                                 created: getDateAndTime(
                                                     data.createdAt
                                                 ),

@@ -169,7 +169,7 @@ const App = () => {
                     />
 
                     <Configurator />
-                    {configsButton}
+                    {/* {configsButton} */}
                 </>
             )}
             {layout === "vr" && <Configurator />}

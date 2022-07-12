@@ -9,7 +9,7 @@ import {
 import axios from "axios";
 import baseUrl from "baseUrl";
 import { deployNotification } from "./notificationActions";
-
+import { logoutUser } from "./userActions";
 export const loadStaffList = () => {
     return async (dispatch, getState) => {
         try {
@@ -25,6 +25,9 @@ export const loadStaffList = () => {
             const { data } = await axios.get(`${baseUrl}/api/users`, config);
             dispatch({ type: STAFF_LIST_SUCCESS, payload: data });
         } catch (error) {
+            if (error.response.data.message === "jwt expired") {
+                dispatch(logoutUser());
+            }
             dispatch({
                 type: STAFF_LIST_FAILURE,
                 payload:
@@ -63,6 +66,9 @@ export const loadTeacherStaffList = () => {
             );
             dispatch({ type: TEACHERS_LIST_SUCCESS, payload: data });
         } catch (error) {
+            if (error.response.data.message === "jwt expired") {
+                dispatch(logoutUser());
+            }
             dispatch({
                 type: TEACHERS_LIST_FAILURE,
                 payload:

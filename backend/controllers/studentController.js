@@ -1,16 +1,16 @@
 import asyncHandler from "express-async-handler";
 import Student from "../data-models/studentModel.js";
 import Class from "../data-models/classModel.js";
+import Office from "../data-models/officesModel.js";
 
 // @desc:   Get All students
 // @route:  GET /api/students
 // @access: PRIVATE
 export const getAllStudents = asyncHandler(async (req, res) => {
     try {
-        const students = await Student.find().populate(
-            "createdBy",
-            "name role"
-        );
+        const students = await Student.find()
+            .populate("createdBy", "name role")
+            .populate("branch", "officeName");
         res.json(students);
     } catch (error) {
         throw error;
@@ -28,14 +28,18 @@ export const createNewStudent = asyncHandler(async (req, res) => {
         birthdate: req.body.birthdate,
         gender: req.body.gender,
         email: req.body.email,
-        mobilePhoneNumber: req.body.phone,
+        mobilePhoneNumber: req.body.mobilePhoneNumber,
         address: {
             street: req.body.address.street,
             suite: req.body.address.suite,
             city: req.body.address.city,
-            postalCode: req.body.address.suite,
+            postalCode: req.body.address.postalCode,
         },
         createdBy: req.user._id,
+        branch: req.body.branch,
+        enrolledClasses: req.body.enrolledClasses
+            ? req.body.enrolledClasses
+            : [],
     });
     const student = await Student.findById(newStudent._id).populate(
         "createdBy",
@@ -50,6 +54,7 @@ export const createNewStudent = asyncHandler(async (req, res) => {
 export const getSingleStudent = asyncHandler(async (req, res) => {
     const student = await Student.findById(req.params.studentId)
         .populate("createdBy", "name")
+        .populate("branch", "officeName")
         .populate("updateHistory.updatedBy", "name")
         .populate("enrolledClasses");
     await student.populate("enrolledClasses.teacher", "name");
@@ -65,7 +70,10 @@ export const getSingleStudent = asyncHandler(async (req, res) => {
 // @route:  PUT /api/students/:studentId
 // @access: PRIVATE
 export const updateStudent = asyncHandler(async (req, res) => {
-    const student = await Student.findById(req.params.studentId);
+    const student = await Student.findById(req.params.studentId).populate(
+        "branch",
+        "officeName"
+    );
 
     const previousStudentObject = {};
 
@@ -75,6 +83,7 @@ export const updateStudent = asyncHandler(async (req, res) => {
     previousStudentObject.address = student.address;
     previousStudentObject.status = student.status;
     previousStudentObject.enrolledClasses = student.enrolledClasses;
+    previousStudentObject.branch = student.branch;
 
     if (student) {
         student.birthdate = req.body.birthdate
@@ -89,6 +98,7 @@ export const updateStudent = asyncHandler(async (req, res) => {
         student.image = req.body.image ? req.body.image : student.image;
         student.address = req.body.address ? req.body.address : student.address;
         student.status = req.body.status ? req.body.status : student.status;
+        student.branch = req.body.branch ? req.body.branch : student.branch;
 
         if (req.body.update) {
             student.updateHistory.push(req.body.update);
@@ -150,6 +160,21 @@ export const updateStudent = asyncHandler(async (req, res) => {
             changes.push(
                 `birthdate was <i>${previousStudentObject.birthdate} </i> - now <i> ${student.birthdate} </i>`
             );
+        if (previousStudentObject.branch) {
+            if (
+                previousStudentObject.branch._id.toString() !==
+                student.branch._id.toString()
+            ) {
+                const newOffice = await Office.findById(student.branch._id);
+                changes.push(
+                    `previous branch was <i>${previousStudentObject.branch.officeName} </i> - now <i> ${newOffice.officeName} </i>`
+                );
+            }
+        } else {
+            const newOffice = await Office.findById(student.branch._id);
+            changes.push(`Branch changed to <i> ${newOffice.officeName} </i>`);
+        }
+
         if (
             previousStudentObject.mobilePhoneNumber !==
             student.mobilePhoneNumber
@@ -222,7 +247,7 @@ export const updateStudent = asyncHandler(async (req, res) => {
 
         if (changes.length) {
             student.updateHistory.push({
-                body: changes.join("\n"),
+                body: changes.join("<br/>"),
                 updatedBy: req.user._id,
             });
         }

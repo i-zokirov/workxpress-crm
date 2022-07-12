@@ -40,7 +40,7 @@ import {
 
 import Notification from "components/NotificationSystem";
 
-function DashboardNavbar({ absolute, light, isMini }) {
+function DashboardNavbar({ absolute, light, isMini, useSettings = true }) {
     const [navbarType, setNavbarType] = useState();
     const [controller, dispatch] = useMaterialUIController();
     const {
@@ -180,6 +180,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                                     {miniSidenav ? "menu_open" : "menu"}
                                 </Icon>
                             </IconButton>
+
                             <IconButton
                                 size="small"
                                 disableRipple
@@ -189,6 +190,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                             >
                                 <Icon sx={iconsStyle}>settings</Icon>
                             </IconButton>
+
                             <IconButton
                                 size="small"
                                 disableRipple

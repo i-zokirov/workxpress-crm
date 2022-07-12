@@ -9,6 +9,9 @@ import {
     STUDENT_PROFILE_UPDATE_REQUEST,
     STUDENT_PROFILE_UPDATE_SUCCESS,
     STUDENT_PROFILE_UPDATE_FAILURE,
+    STUDENT_PROFILE_CREATE_REQUEST,
+    STUDENT_PROFILE_CREATE_SUCCESS,
+    STUDENT_PROFILE_CREATE_FAILURE,
     STUDENT_PROFILE_DELETE_REQUEST,
     STUDENT_PROFILE_DELETE_SUCCESS,
     STUDENT_PROFILE_DELETE_FAILURE,
@@ -59,6 +62,28 @@ export const studentProfileReducer = (state = {}, action) => {
                 loading: false,
                 data: null,
                 error: action.payload,
+            };
+        default:
+            return state;
+    }
+};
+
+export const studentProfileCreateReducer = (state = {}, action) => {
+    switch (action.type) {
+        case STUDENT_PROFILE_CREATE_REQUEST:
+            return {
+                loading: true,
+            };
+        case STUDENT_PROFILE_CREATE_SUCCESS:
+            return {
+                loading: false,
+                success: true,
+                data: action.payload,
+            };
+        case STUDENT_PROFILE_CREATE_FAILURE:
+            return {
+                loading: false,
+                success: false,
             };
         default:
             return state;

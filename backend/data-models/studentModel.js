@@ -95,6 +95,10 @@ const studentSchema = mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
         },
+        branch: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Office",
+        },
         updateHistory: [updateSchema],
     },
     {
