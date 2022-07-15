@@ -6,7 +6,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-
+import MDButton from "components/MDButton";
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
@@ -65,6 +65,10 @@ const Students = () => {
         }
     }, []);
 
+    const handleRefresh = () => {
+        dispatch(loadStudentsList());
+    };
+
     // get students data from redux
     const { list, error, loading } = useSelector((state) => state.students);
 
@@ -105,9 +109,32 @@ const Students = () => {
                                     borderRadius="lg"
                                     coloredShadow={error ? "error" : "info"}
                                 >
-                                    <MDTypography variant="h6" color="white">
-                                        Students {error && `: ${error}`}
-                                    </MDTypography>
+                                    <MDBox
+                                        sx={{
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <MDTypography
+                                            variant="h6"
+                                            color="white"
+                                        >
+                                            Students {error && `: ${error}`}
+                                        </MDTypography>
+                                        <MDButton
+                                            size={"medium"}
+                                            iconOnly={true}
+                                            onClick={handleRefresh}
+                                        >
+                                            <Icon
+                                                fontSize="large"
+                                                sx={{ fontSize: "100px" }}
+                                            >
+                                                refresh_icon
+                                            </Icon>
+                                        </MDButton>
+                                    </MDBox>
                                 </MDBox>
                                 <MDBox pt={3}>
                                     {list.length && (
@@ -116,6 +143,7 @@ const Students = () => {
                                             isSorted={true}
                                             entriesPerPage={true}
                                             showTotalEntries={true}
+                                            canSearch={false}
                                             noEndBorder
                                         />
                                     )}

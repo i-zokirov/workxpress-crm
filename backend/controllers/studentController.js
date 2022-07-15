@@ -1,7 +1,11 @@
 import asyncHandler from "express-async-handler";
+import multer from "multer";
 import Student from "../data-models/studentModel.js";
 import Class from "../data-models/classModel.js";
 import Office from "../data-models/officesModel.js";
+
+import uploadImage from "../middleware/uploadImage.js";
+import { cloudinary } from "../services/cloudinary.js";
 
 // @desc:   Get All students
 // @route:  GET /api/students
@@ -272,5 +276,35 @@ export const deleteSingleStudent = asyncHandler(async (req, res) => {
     } else {
         res.status(404);
         throw new Error("Student not found");
+    }
+});
+
+export const uploadStudentPicture = asyncHandler(async (req, res) => {
+    const student = await Student.findById(req.params.studentId);
+    if (student) {
+        console.log("Upload start");
+        await uploadImage(req, res);
+        console.log("Upload done");
+
+        const { filename, path } = req.file;
+        if (student.image) {
+            await cloudinary.uploader.destroy(student.image.filename);
+        }
+        const image = {
+            filename,
+            original: path,
+            thumbnail: path
+                .split("/upload/")
+                .join("/upload/c_thumb,w_200,g_face/"),
+            circle: path
+                .split("/upload/")
+                .join(
+                    "/upload/w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35"
+                ),
+        };
+
+        student.image = image;
+        await student.save();
+        res.send("SUCCESS");
     }
 });

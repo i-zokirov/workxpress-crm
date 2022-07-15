@@ -70,7 +70,10 @@ const studentSchema = mongoose.Schema(
             type: String,
         },
         image: {
-            type: String,
+            filename: String,
+            original: String,
+            thumbnail: String,
+            circle: String,
         },
         address: addressSchema,
         status: {

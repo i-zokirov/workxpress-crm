@@ -4,7 +4,14 @@ import MDTypography from "components/MDTypography";
 import MDBox from "components/MDBox";
 import MDAvatar from "components/MDAvatar";
 import MDInput from "components/MDInput";
-import { Grid, Container, Divider } from "@mui/material";
+import {
+    Grid,
+    Container,
+    Divider,
+    Button,
+    Icon,
+    IconButton,
+} from "@mui/material";
 import MDButton from "components/MDButton";
 import Select from "components/Select";
 // formik
@@ -13,10 +20,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateStudentProfile } from "redux/actions/studentActions";
 import { deleteStudentProfile } from "redux/actions/studentActions";
 import MultipleSelect from "components/MultiSelect";
-
+import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 // Material Dashboard 2 React contexts
 import { useMaterialUIController } from "context";
 
+import axios from "axios";
+import baseUrl from "baseUrl";
 const statuses = [
     {
         label: "Student",
@@ -131,6 +140,35 @@ const ProfileEdit = ({
 
     const user = useSelector((state) => state.auth.userData);
 
+    const [disableUploadBtn, setDisableUploadBtn] = useState(false);
+    const [image, setImage] = useState(student.image.circle || "");
+    const handleUpload = async (e) => {
+        const file = e.target.files[0];
+
+        const formdata = new FormData();
+        formdata.append("image", file);
+
+        try {
+            const config = {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${user.token}`,
+                },
+            };
+
+            await axios.post(
+                `/api/students/${student._id}/upload`,
+                formdata,
+                config
+            );
+        } catch (error) {
+            console.log(
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message
+            );
+        }
+    };
     return (
         <Modal
             open={open}
@@ -204,12 +242,33 @@ const ProfileEdit = ({
                             Edit profile data
                         </MDTypography>
 
-                        <MDBox>
+                        <MDBox
+                            sx={{
+                                display: "flex",
+                                justifyContent: "left",
+                            }}
+                        >
                             <MDAvatar
                                 src="https://bit.ly/34BY10g"
                                 alt="Avatar"
                                 size="xxl"
                             />
+                            <MDBox>
+                                <IconButton
+                                    color="primary"
+                                    aria-label="upload picture"
+                                    component="label"
+                                    size="large"
+                                >
+                                    <input
+                                        hidden
+                                        accept="image/*"
+                                        type="file"
+                                        onChange={handleUpload}
+                                    />
+                                    <AddAPhotoIcon />
+                                </IconButton>
+                            </MDBox>
                         </MDBox>
                         <Grid container spacing={2} sx={{ marginTop: "2px" }}>
                             <Grid item xs={12} md={6} xl={6}>
