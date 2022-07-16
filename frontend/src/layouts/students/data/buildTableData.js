@@ -4,8 +4,6 @@ import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 
-// Images
-import team2 from "assets/images/team-2.jpg";
 import { Link } from "react-router-dom";
 
 import getDateAndTime from "utils/getDateAndTime";

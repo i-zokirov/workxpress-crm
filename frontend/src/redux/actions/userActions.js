@@ -143,7 +143,7 @@ export const updateUserPassword = (reqBody) => {
                 type: USER_PASSWORD_UPDATE_FAILURE,
                 payload: err,
             });
-            dispatch(deployNotification(err, "error", false));
+            dispatch(deployNotification(err, "error"));
         }
     };
 };

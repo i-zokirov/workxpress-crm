@@ -1,4 +1,5 @@
 import express from "express";
+import listEndpoints from "express-list-endpoints";
 import path from "path";
 import cors from "cors";
 import { notFound, errorHandler } from "./errorHandlers/errorHandlers.js";
@@ -38,8 +39,9 @@ app.use(notFound);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () =>
+app.listen(PORT, () => {
     console.log(
         `Server is running in ${process.env.NODE_ENV} environment. \nServer PORT: ${PORT}`
-    )
-);
+    );
+    console.table(listEndpoints(app));
+});

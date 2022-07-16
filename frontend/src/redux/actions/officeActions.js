@@ -4,8 +4,13 @@ import {
     OFFICE_LIST_REQUEST,
     OFFICE_LIST_SUCCESS,
     OFFICE_LIST_FAILURE,
+    OFFICE_REQUEST,
+    OFFICE_SUCCESS,
+    OFFICE_FAILURE,
 } from "redux/constants/officeConstants";
+import { deployNotification } from "./notificationActions";
 import { logoutUser } from "./userActions";
+
 export const loadOfficeList = () => {
     return async (dispatch, getState) => {
         try {
@@ -24,13 +29,50 @@ export const loadOfficeList = () => {
             if (error.response.data.message === "jwt expired") {
                 dispatch(logoutUser());
             }
+            const err =
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message;
             dispatch({
                 type: OFFICE_LIST_FAILURE,
-                payload:
-                    error.response && error.response.data.message
-                        ? error.response.data.message
-                        : error.message,
+                payload: err,
             });
+            dispatch(deployNotification(err, "error"));
+        }
+    };
+};
+
+export const loadOffice = (officeId) => {
+    return async (dispatch, getState) => {
+        try {
+            dispatch({ type: OFFICE_REQUEST });
+            const {
+                auth: { userData },
+            } = getState();
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userData.token}`,
+                },
+            };
+            const { data } = await axios.get(
+                `${baseUrl}/api/offices/${officeId}`,
+                config
+            );
+            dispatch({ type: OFFICE_SUCCESS, payload: data });
+        } catch (error) {
+            if (error.response.data.message === "jwt expired") {
+                dispatch(logoutUser());
+            }
+            const err =
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message;
+            dispatch({
+                type: OFFICE_FAILURE,
+                payload: err,
+            });
+
+            dispatch(deployNotification(err, "error"));
         }
     };
 };

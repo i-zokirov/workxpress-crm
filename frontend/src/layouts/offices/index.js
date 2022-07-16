@@ -20,67 +20,77 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loadOfficeList } from "redux/actions/officeActions";
 
-
 const OfficesTable = () => {
-  const [rows, setRows] = useState([])
-  const [columns, setColumns] = useState([])
+    const [rows, setRows] = useState([]);
+    const [columns, setColumns] = useState([]);
 
-  const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
-  const {list, error, loading} = useSelector(state => state.offices)
+    const { list, error, loading } = useSelector((state) => state.offices);
 
-  useEffect(() => {
-    if(!list.length){
-      dispatch(loadOfficeList())
-    }
-  }, [])
+    useEffect(() => {
+        if (!list.length) {
+            dispatch(loadOfficeList());
+        }
+    }, []);
 
-  useEffect(() => {
-    if(list.length){
-      const { columns, rows } = buildTableData(list);
-      setRows(rows)
-      setColumns(columns)
-    }
-  }, [list])
-  
+    useEffect(() => {
+        if (list.length) {
+            const { columns, rows } = buildTableData(list);
+            setRows(rows);
+            setColumns(columns);
+        }
+    }, [list]);
 
-  return (
-    <DashboardLayout>
-      <DashboardNavbar />
-      <MDBox pt={6} pb={3}>
-        <Grid container spacing={6}>
-          <Grid item xs={12}>
-            <Card>
-              <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor={error ? "error" :"info"}
-                borderRadius="lg"
-                coloredShadow={error ? "error" :"info"}
-              >
-                <MDTypography variant="h6" color="white">
-                  Offices
-                </MDTypography>
-              </MDBox>
-              <MDBox pt={3}>
-                {loading ? <Container maxWidth="sm"><LinearProgress color="info"/></Container> : list.length && <DataTable
-                  table={{ columns, rows }}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />}
-              </MDBox>
-            </Card>
-          </Grid>
-        </Grid>
-      </MDBox>
-      <Footer />
-    </DashboardLayout>
-  );
-}
+    return (
+        <>
+            {loading && (
+                <LinearProgress
+                    color="primary"
+                    sx={{ width: "100%", overflow: "hidden" }}
+                />
+            )}
+
+            <DashboardLayout>
+                <DashboardNavbar />
+                <MDBox pt={6} pb={3}>
+                    <Grid container spacing={6}>
+                        <Grid item xs={12}>
+                            <Card>
+                                <MDBox
+                                    mx={2}
+                                    mt={-3}
+                                    py={3}
+                                    px={2}
+                                    variant="gradient"
+                                    bgColor={error ? "error" : "info"}
+                                    borderRadius="lg"
+                                    coloredShadow={error ? "error" : "info"}
+                                >
+                                    <MDTypography variant="h6" color="white">
+                                        Offices
+                                    </MDTypography>
+                                </MDBox>
+                                <MDBox pt={3}>
+                                    {list.length && (
+                                        <DataTable
+                                            table={{ columns, rows }}
+                                            isSorted={true}
+                                            entriesPerPage={true}
+                                            showTotalEntries={true}
+                                            canSearch={false}
+                                            noEndBorder
+                                        />
+                                    )}
+                                </MDBox>
+                            </Card>
+                        </Grid>
+                    </Grid>
+                </MDBox>
+                <Footer />
+            </DashboardLayout>
+        </>
+    );
+};
 
 export default OfficesTable;

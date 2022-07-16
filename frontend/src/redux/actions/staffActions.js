@@ -40,8 +40,7 @@ export const loadStaffList = () => {
                     error.response && error.response.data.message
                         ? error.response.data.message
                         : error.message,
-                    "error",
-                    false
+                    "error"
                 )
             );
         }
@@ -81,8 +80,7 @@ export const loadTeacherStaffList = () => {
                     error.response && error.response.data.message
                         ? error.response.data.message
                         : error.message,
-                    "error",
-                    false
+                    "error"
                 )
             );
         }

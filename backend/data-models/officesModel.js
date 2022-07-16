@@ -40,6 +40,11 @@ const officeSchema = mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
         },
+        image: {
+            filename: String,
+            original: String,
+            banner: String,
+        },
     },
     {
         timestamps: true,

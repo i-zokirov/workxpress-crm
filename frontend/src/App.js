@@ -33,7 +33,7 @@ import {
 
 import ProtectRoute from "ProtectRoute";
 import StudentProfile from "layouts/studentProfile";
-
+import OfficePage from "layouts/officePage";
 // Images
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
@@ -180,6 +180,11 @@ const App = () => {
                     exact
                     path="/students/:studentId"
                     element={<StudentProfile />}
+                />
+                <Route
+                    exact
+                    path="/offices/:officeId"
+                    element={<OfficePage />}
                 />
                 <Route path="*" element={<Navigate to="/dashboard" />} />
             </Routes>

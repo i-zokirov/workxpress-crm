@@ -87,8 +87,7 @@ export const fetchStudentProfile = (studentId) => {
                     error.response && error.response.data.message
                         ? error.response.data.message
                         : error.message,
-                    "error",
-                    false
+                    "error"
                 )
             );
         }

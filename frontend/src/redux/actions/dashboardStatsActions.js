@@ -38,8 +38,7 @@ export const loadDashboardStats = () => {
                     error.response && error.response.data.message
                         ? error.response.data.message
                         : error.message,
-                    "error",
-                    true
+                    "error"
                 )
             );
         }
