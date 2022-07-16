@@ -106,6 +106,22 @@ const ProfileCreate = ({ open, onClose, classOptions, officeOptions }) => {
     const user = useSelector((state) => state.auth.userData);
 
     const handleFormSubmit = (values, { setSubmitting }) => {
+        const male =
+            "https://res.cloudinary.com/workxpress/image/upload/v1657904978/workxpress/images/male_2_xkpdcr.jpg";
+        const female =
+            "https://res.cloudinary.com/workxpress/image/upload/v1657904978/workxpress/images/female_oqgbtu.jpg";
+        const imageByGender = values.gender === "Male" ? male : female;
+        const image = {
+            original: imageByGender,
+            thumbnail: imageByGender
+                .split("/upload/")
+                .join("/upload/c_thumb,w_200,g_face/"),
+            circle: imageByGender
+                .split("/upload/")
+                .join(
+                    "/upload/w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/"
+                ),
+        };
         const reqBody = {
             name: `${values.firstName} ${values.lastName}`,
             email: values.email,
@@ -122,6 +138,7 @@ const ProfileCreate = ({ open, onClose, classOptions, officeOptions }) => {
             status: values.status,
             enrolledClasses,
             createdBy: user._id,
+            image,
         };
         dispatch(createStudentProfile(reqBody));
         setSubmitting(false);
@@ -156,7 +173,7 @@ const ProfileCreate = ({ open, onClose, classOptions, officeOptions }) => {
 
                         <MDBox>
                             <MDAvatar
-                                src="https://bit.ly/34BY10g"
+                                src="https://res.cloudinary.com/workxpress/image/upload/v1657904978/workxpress/images/male_2_xkpdcr.jpg"
                                 alt="Avatar"
                                 size="xxl"
                             />

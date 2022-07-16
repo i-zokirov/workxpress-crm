@@ -15,6 +15,7 @@ export const getAllStudents = asyncHandler(async (req, res) => {
         const students = await Student.find()
             .populate("createdBy", "name role")
             .populate("branch", "officeName");
+
         res.json(students);
     } catch (error) {
         throw error;
@@ -25,6 +26,22 @@ export const getAllStudents = asyncHandler(async (req, res) => {
 // @route:  POST /api/students/new
 // @access: PRIVATE
 export const createNewStudent = asyncHandler(async (req, res) => {
+    const male =
+        "https://res.cloudinary.com/workxpress/image/upload/v1657904978/workxpress/images/male_2_xkpdcr.jpg";
+    const female =
+        "https://res.cloudinary.com/workxpress/image/upload/v1657904978/workxpress/images/female_oqgbtu.jpg";
+    const imageByGender = req.body.gender === "Male" ? male : female;
+    const image = {
+        original: imageByGender,
+        thumbnail: imageByGender
+            .split("/upload/")
+            .join("/upload/c_thumb,w_200,g_face/"),
+        circle: imageByGender
+            .split("/upload/")
+            .join(
+                "/upload/w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/"
+            ),
+    };
     const newStudent = await Student.create({
         firstName: req.body.name.split(" ")[0],
         lastName: req.body.name.split(" ")[1],
@@ -44,6 +61,7 @@ export const createNewStudent = asyncHandler(async (req, res) => {
         enrolledClasses: req.body.enrolledClasses
             ? req.body.enrolledClasses
             : [],
+        image: req.body.image ? req.body.image : image,
     });
     const student = await Student.findById(newStudent._id).populate(
         "createdBy",
@@ -287,7 +305,7 @@ export const uploadStudentPicture = asyncHandler(async (req, res) => {
         console.log("Upload done");
 
         const { filename, path } = req.file;
-        if (student.image) {
+        if (student.image && student.image.filename) {
             await cloudinary.uploader.destroy(student.image.filename);
         }
         const image = {
@@ -299,12 +317,12 @@ export const uploadStudentPicture = asyncHandler(async (req, res) => {
             circle: path
                 .split("/upload/")
                 .join(
-                    "/upload/w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35"
+                    "/upload/w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/"
                 ),
         };
 
         student.image = image;
         await student.save();
-        res.send("SUCCESS");
+        res.json(image);
     }
 });

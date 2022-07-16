@@ -14,8 +14,6 @@ import MDBadge from "components/MDBadge";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 
-import burceMars from "assets/images/bruce-mars.jpg";
-
 // Material Dashboard 2 React base styles
 import breakpoints from "assets/theme/base/breakpoints";
 
@@ -34,7 +32,7 @@ const assignColor = (status) => {
     }
 };
 
-const Profile = ({ name, status, children }) => {
+const Profile = ({ name, status, children, profileImage }) => {
     const [tabsOrientation, setTabsOrientation] = useState("horizontal");
     const [tabValue, setTabValue] = useState(0);
 
@@ -82,9 +80,9 @@ const Profile = ({ name, status, children }) => {
                 <Grid container spacing={3} alignItems="center">
                     <Grid item>
                         <MDAvatar
-                            src={burceMars}
+                            src={profileImage}
                             alt="profile-image"
-                            size="xl"
+                            size="xxl"
                             shadow="sm"
                         />
                     </Grid>

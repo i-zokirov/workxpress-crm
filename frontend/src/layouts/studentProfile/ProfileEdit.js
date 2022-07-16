@@ -26,6 +26,7 @@ import { useMaterialUIController } from "context";
 
 import axios from "axios";
 import baseUrl from "baseUrl";
+import MDAlert from "components/MDAlert";
 const statuses = [
     {
         label: "Student",
@@ -141,10 +142,12 @@ const ProfileEdit = ({
     const user = useSelector((state) => state.auth.userData);
 
     const [disableUploadBtn, setDisableUploadBtn] = useState(false);
-    const [image, setImage] = useState(student.image.circle || "");
+    const [image, setImage] = useState(student.image.original || "");
+    const [uploadError, setUploadError] = useState(null)
     const handleUpload = async (e) => {
         const file = e.target.files[0];
 
+        setDisableUploadBtn(true);
         const formdata = new FormData();
         formdata.append("image", file);
 
@@ -156,19 +159,27 @@ const ProfileEdit = ({
                 },
             };
 
-            await axios.post(
+            const { data } = await axios.post(
                 `/api/students/${student._id}/upload`,
                 formdata,
                 config
             );
+            setImage(data.original);
         } catch (error) {
-            console.log(
-                error.response && error.response.data.message
+            const err = error.response && error.response.data.message
                     ? error.response.data.message
                     : error.message
+            console.log(
+                err
             );
+            setUploadError(err)
+            setTimeout(() => {
+                setUploadError(null)
+            }, 5000)
         }
+        setDisableUploadBtn(false);
     };
+
     return (
         <Modal
             open={open}
@@ -248,17 +259,14 @@ const ProfileEdit = ({
                                 justifyContent: "left",
                             }}
                         >
-                            <MDAvatar
-                                src="https://bit.ly/34BY10g"
-                                alt="Avatar"
-                                size="xxl"
-                            />
+                            <MDAvatar src={image} alt="Avatar" size="xxl" />
                             <MDBox>
                                 <IconButton
                                     color="primary"
                                     aria-label="upload picture"
                                     component="label"
                                     size="large"
+                                    disabled={disableUploadBtn}
                                 >
                                     <input
                                         hidden
@@ -268,7 +276,9 @@ const ProfileEdit = ({
                                     />
                                     <AddAPhotoIcon />
                                 </IconButton>
+
                             </MDBox>
+                            {uploadError && <MDAlert color="error" dismissible>{uploadError}</MDAlert>}
                         </MDBox>
                         <Grid container spacing={2} sx={{ marginTop: "2px" }}>
                             <Grid item xs={12} md={6} xl={6}>

@@ -76,7 +76,11 @@ const StudentProfile = () => {
                 <DashboardNavbar />
                 <MDBox mb={2}>
                     {data && classList.data && offices.list && (
-                        <Profile name={data.name} status={data.status}>
+                        <Profile
+                            name={data.name}
+                            status={data.status}
+                            profileImage={data.image.original}
+                        >
                             <MDBox mt={5} mb={3}>
                                 <ProfileEdit
                                     open={showEditWindow}

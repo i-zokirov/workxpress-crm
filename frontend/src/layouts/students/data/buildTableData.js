@@ -86,7 +86,7 @@ const buildTableData = (studentsList) => {
             return {
                 student: (
                     <Student
-                        image={team2}
+                        image={student.image.thumbnail}
                         name={student.name}
                         email={student.email}
                     />
