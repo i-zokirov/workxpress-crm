@@ -297,6 +297,9 @@ export const deleteSingleStudent = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc:   POST single student
+// @route:  POST /api/students/:studentId/upload
+// @access: PRIVATE
 export const uploadStudentPicture = asyncHandler(async (req, res) => {
     const student = await Student.findById(req.params.studentId);
     if (student) {
@@ -324,5 +327,8 @@ export const uploadStudentPicture = asyncHandler(async (req, res) => {
         student.image = image;
         await student.save();
         res.json(image);
+    } else {
+        res.status(404);
+        throw new Error("Student not found");
     }
 });

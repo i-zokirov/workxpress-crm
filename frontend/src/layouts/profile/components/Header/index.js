@@ -23,7 +23,7 @@ import breakpoints from "assets/theme/base/breakpoints";
 import burceMars from "assets/images/bruce-mars.jpg";
 import backgroundImage from "assets/images/bg-profile.jpeg";
 
-function Header({ children, name, role }) {
+function Header({ children, name, role,profileImage }) {
     const [tabsOrientation, setTabsOrientation] = useState("horizontal");
     const [tabValue, setTabValue] = useState(0);
 
@@ -84,9 +84,9 @@ function Header({ children, name, role }) {
                 <Grid container spacing={3} alignItems="center">
                     <Grid item>
                         <MDAvatar
-                            src={burceMars}
+                            src={profileImage}
                             alt="profile-image"
-                            size="xl"
+                            size="xxl"
                             shadow="sm"
                         />
                     </Grid>

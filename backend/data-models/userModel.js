@@ -40,7 +40,10 @@ const userSchema = mongoose.Schema(
             unique: true,
         },
         image: {
-            type: String,
+            filename: String,
+            original: String,
+            thumbnail: String,
+            circle: String,
         },
         birthdate: {
             type: String,

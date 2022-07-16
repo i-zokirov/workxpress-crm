@@ -1,22 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import Modal from "components/MUIModal";
 import MDTypography from "components/MDTypography";
 import MDBox from "components/MDBox";
 import MDAvatar from "components/MDAvatar";
 import colors from "assets/theme/base/colors";
 import MDInput from "components/MDInput";
-import { Grid, Container } from "@mui/material";
+import { Grid, Container, IconButton, Divider } from "@mui/material";
 
 // @mui icons
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import MDButton from "components/MDButton";
-
+import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 // formik
 import { Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserProfile } from "redux/actions/userActions";
+
+import axios from "axios";
+import baseUrl from "baseUrl";
+import MDAlert from "components/MDAlert";
 
 const iconBoxStyle = {
     display: "flex",
@@ -27,7 +31,7 @@ const iconBoxStyle = {
     fontSize: "35px",
 };
 
-const ProfileEdit = ({ open, onClose, user }) => {
+const ProfileEdit = ({ open, onClose, user, image, setImage }) => {
     const { socialMediaColors } = colors;
     const initialValues = {
         name: user.name,
@@ -72,7 +76,45 @@ const ProfileEdit = ({ open, onClose, user }) => {
     };
 
     const { loading } = useSelector((state) => state.updateProfile);
+    const userData = useSelector((state) => state.auth.userData);
+    const [disableUploadBtn, setDisableUploadBtn] = useState(false);
 
+    const [uploadError, setUploadError] = useState(null);
+
+    const handleUpload = async (e) => {
+        const file = e.target.files[0];
+
+        setDisableUploadBtn(true);
+        const formdata = new FormData();
+        formdata.append("image", file);
+
+        try {
+            const config = {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${userData.token}`,
+                },
+            };
+
+            const { data } = await axios.post(
+                `/api/users/${user._id}/upload`,
+                formdata,
+                config
+            );
+            setImage(data.original);
+        } catch (error) {
+            const err =
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message;
+            console.log(err);
+            setUploadError(err);
+            setTimeout(() => {
+                setUploadError(null);
+            }, 5000);
+        }
+        setDisableUploadBtn(false);
+    };
     return (
         <Modal
             open={open}
@@ -99,12 +141,35 @@ const ProfileEdit = ({ open, onClose, user }) => {
                             Edit profile data
                         </MDTypography>
 
-                        <MDBox>
-                            <MDAvatar
-                                src="https://bit.ly/34BY10g"
-                                alt="Avatar"
-                                size="xxl"
-                            />
+                        <MDBox
+                            sx={{
+                                display: "flex",
+                                justifyContent: "left",
+                            }}
+                        >
+                            <MDAvatar src={image} alt="Avatar" size="xxl" />
+                            <MDBox>
+                                <IconButton
+                                    color="primary"
+                                    aria-label="upload picture"
+                                    component="label"
+                                    size="large"
+                                    disabled={disableUploadBtn}
+                                >
+                                    <input
+                                        hidden
+                                        accept="image/*"
+                                        type="file"
+                                        onChange={handleUpload}
+                                    />
+                                    <AddAPhotoIcon />
+                                </IconButton>
+                            </MDBox>
+                            {uploadError && (
+                                <MDAlert color="error" dismissible>
+                                    {uploadError}
+                                </MDAlert>
+                            )}
                         </MDBox>
                         <Grid container spacing={2} sx={{ marginTop: "2px" }}>
                             <Grid item xs={12} md={6} xl={6}>
@@ -220,7 +285,7 @@ const ProfileEdit = ({ open, onClose, user }) => {
                             <Grid item xs={12} md={12} xl={12}>
                                 <MDInput
                                     multiline
-                                    rows={4}
+                                    rows={6}
                                     label="Profile bio"
                                     onChange={handleChange}
                                     name="bio"
@@ -230,6 +295,8 @@ const ProfileEdit = ({ open, onClose, user }) => {
                                     required
                                 />
                             </Grid>
+
+                            <Divider />
 
                             <Grid item xs={12} md={12} xl={12}>
                                 <MDBox

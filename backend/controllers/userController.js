@@ -1,6 +1,8 @@
 import User from "../data-models/userModel.js";
 import asyncHandler from "express-async-handler";
 import generateToken from "../utils/generateToken.js";
+import uploadImage from "../middleware/uploadImage.js";
+import { cloudinary } from "../services/cloudinary.js";
 
 // @desc:   Get all users
 // @route:  GET /api/users
@@ -45,6 +47,22 @@ export const registerUser = asyncHandler(async (req, res) => {
         throw new Error("User with the given email address already exists.");
     }
 
+    const male =
+        "https://res.cloudinary.com/workxpress/image/upload/v1657904978/workxpress/images/male_2_xkpdcr.jpg";
+    const female =
+        "https://res.cloudinary.com/workxpress/image/upload/v1657904978/workxpress/images/female_oqgbtu.jpg";
+    const imageByGender = gender === "Male" ? male : female;
+    const image = {
+        original: imageByGender,
+        thumbnail: imageByGender
+            .split("/upload/")
+            .join("/upload/c_thumb,w_200,g_face/"),
+        circle: imageByGender
+            .split("/upload/")
+            .join(
+                "/upload/w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/"
+            ),
+    };
     const newUser = await User.create({
         name: `${firstName} ${lastName}`,
         firstName,
@@ -55,6 +73,7 @@ export const registerUser = asyncHandler(async (req, res) => {
         gender,
         mobilePhoneNumber,
         birthdate,
+        image,
     });
     if (newUser) {
         res.status(201).json({
@@ -191,8 +210,41 @@ export const updateCriticalProp = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc:   POST User account
+// @route:  POST /api/users/:userId/upload
+// @access: PRIVATE || Admin
+export const uploadUserImage = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.userId);
+    if (user) {
+        await uploadImage(req, res);
+        const { filename, path } = req.file;
+        if (user.image && user.image.filename) {
+            await cloudinary.uploader.destroy(user.image.filename);
+        }
+        const image = {
+            filename,
+            original: path,
+            thumbnail: path
+                .split("/upload/")
+                .join("/upload/c_thumb,w_200,g_face/"),
+            circle: path
+                .split("/upload/")
+                .join(
+                    "/upload/w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/"
+                ),
+        };
+
+        user.image = image;
+        await user.save();
+        res.json(image);
+    } else {
+        res.status(404);
+        throw new Error("User not found");
+    }
+});
+
 // @desc:   DELETE User account
-// @route:  DELETE /api/users/:userId/role
+// @route:  DELETE /api/users/:userId/
 // @access: PRIVATE && Admin
 export const deleteUser = asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.userId);

@@ -93,8 +93,8 @@ const StudentProfile = () => {
                                     <Grid
                                         item
                                         xs={12}
-                                        md={3}
-                                        xl={3}
+                                        md={4}
+                                        xl={4}
                                         sx={{ display: "flex" }}
                                     >
                                         <Divider
@@ -145,7 +145,7 @@ const StudentProfile = () => {
                                             sx={{ mx: 0 }}
                                         />
                                     </Grid>
-                                    <Grid item xs={12} md={9} xl={9}>
+                                    <Grid item xs={12} md={8} xl={8}>
                                         <ProfileNotes
                                             title="Notes"
                                             shadow={false}

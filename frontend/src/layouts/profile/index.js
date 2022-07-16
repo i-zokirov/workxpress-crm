@@ -46,6 +46,7 @@ const Overview = () => {
 
     const [showEditWindow, setShowEditWindow] = useState(false);
 
+    const [image, setImage] = useState("");
     const handleEditWindowState = () => {
         setShowEditWindow((prev) => !prev);
     };
@@ -55,6 +56,11 @@ const Overview = () => {
         }
     }, []);
 
+    useEffect(() => {
+        if (data) {
+            setImage(data.image ? data.image.original : "");
+        }
+    }, [data]);
     return (
         <>
             {loading && (
@@ -67,13 +73,19 @@ const Overview = () => {
                 <DashboardNavbar />
                 <MDBox mb={2} />
                 {!loading && data && (
-                    <Header name={data.name} role={data.role}>
+                    <Header
+                        name={data.name}
+                        role={data.role}
+                        profileImage={image}
+                    >
                         <MDBox mt={5} mb={3}>
                             <Grid container spacing={1}>
                                 <ProfileEdit
                                     user={data}
                                     open={showEditWindow}
                                     onClose={handleEditWindowState}
+                                    image={image}
+                                    setImage={setImage}
                                 />
                                 <Grid
                                     item
