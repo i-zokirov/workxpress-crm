@@ -6,6 +6,7 @@ import {
     getSingleUser,
     registerUser,
     updateCriticalProp,
+    updatePassword,
     updateSingleUser,
     uploadUserImage,
 } from "../controllers/userController.js";
@@ -23,6 +24,8 @@ router
     .route("/:userId")
     .get(protect, getSingleUser)
     .put(protect, updateSingleUser);
+
+router.route("/:userId/password").put(protect, updatePassword);
 
 router.route("/:userId/upload").post(protect, uploadUserImage);
 router

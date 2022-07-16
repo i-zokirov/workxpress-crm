@@ -9,6 +9,9 @@ import {
     USER_PROFILE_UPDATE_REQUEST,
     USER_PROFILE_UPDATE_SUCCESS,
     USER_PROFILE_UPDATE_FAILURE,
+    USER_PASSWORD_UPDATE_REQUEST,
+    USER_PASSWORD_UPDATE_SUCCESS,
+    USER_PASSWORD_UPDATE_FAILURE,
 } from "redux/constants/userConstants";
 import initialState from "../initialState";
 
@@ -79,6 +82,31 @@ export const updateProfileReducer = (state = {}, action) => {
                 error: null,
             };
         case USER_PROFILE_UPDATE_FAILURE:
+            return {
+                loading: false,
+                success: false,
+                error: action.payload,
+            };
+        default:
+            return state;
+    }
+};
+
+export const updatePasswordReducer = (state = {}, action) => {
+    switch (action.type) {
+        case USER_PASSWORD_UPDATE_REQUEST:
+            return {
+                loading: true,
+                success: false,
+                error: null,
+            };
+        case USER_PASSWORD_UPDATE_SUCCESS:
+            return {
+                loading: false,
+                success: true,
+                error: null,
+            };
+        case USER_PASSWORD_UPDATE_FAILURE:
             return {
                 loading: false,
                 success: false,

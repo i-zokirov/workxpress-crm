@@ -9,9 +9,13 @@ import {
     USER_PROFILE_UPDATE_REQUEST,
     USER_PROFILE_UPDATE_SUCCESS,
     USER_PROFILE_UPDATE_FAILURE,
+    USER_PASSWORD_UPDATE_REQUEST,
+    USER_PASSWORD_UPDATE_SUCCESS,
+    USER_PASSWORD_UPDATE_FAILURE,
 } from "redux/constants/userConstants";
 import baseUrl from "baseUrl";
 import axios from "axios";
+import { deployNotification } from "./notificationActions";
 
 export const authenticateUser = (email, password) => {
     return async (dispatch) => {
@@ -103,6 +107,43 @@ export const updateUserProfile = (reqBody, userId) => {
                         ? error.response.data.message
                         : error.message,
             });
+        }
+    };
+};
+
+export const updateUserPassword = (reqBody) => {
+    return async (dispatch, getState) => {
+        try {
+            dispatch({ type: USER_PASSWORD_UPDATE_REQUEST });
+
+            const {
+                auth: { userData },
+            } = getState();
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userData.token}`,
+                },
+            };
+
+            const { data } = await axios.put(
+                `${baseUrl}/api/users/${userData._id}/password`,
+                reqBody,
+                config
+            );
+            console.log(data);
+
+            dispatch({ type: USER_PASSWORD_UPDATE_SUCCESS });
+            dispatch(deployNotification(data.message, "success"));
+        } catch (error) {
+            const err =
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message;
+            dispatch({
+                type: USER_PASSWORD_UPDATE_FAILURE,
+                payload: err,
+            });
+            dispatch(deployNotification(err, "error", false));
         }
     };
 };

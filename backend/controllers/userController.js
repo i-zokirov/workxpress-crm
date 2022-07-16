@@ -175,6 +175,7 @@ export const updateSingleUser = asyncHandler(async (req, res) => {
             user.telegram = req.body.telegram;
             user.facebook = req.body.facebook;
             user.instagram = req.body.instagram;
+
             await user.save();
             res.json({ message: "Successfully updated!" });
         } else {
@@ -187,6 +188,38 @@ export const updateSingleUser = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc:   Update single user password
+// @route:  PUT /api/users/:userId/password
+// @access: PRIVATE || Admin
+export const updatePassword = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.userId);
+    const { password, newPassword } = req.body;
+    console.log(req.body);
+    if (user) {
+        if (user._id.toString() === req.user._id.toString()) {
+            if (await user.matchPassword(password)) {
+                user.password = newPassword;
+                await user.save();
+                res.send({
+                    message: "Password has been successfully updated!",
+                });
+            } else {
+                res.status(403);
+                throw new Error("Invalid credentials");
+            }
+        } else if (req.user.role === "Administrator") {
+            user.password = newPassword;
+            await user.save();
+            res.send({ message: "Password has been successfully updated!" });
+        } else {
+            res.status(403);
+            throw new Error("Not Authorized!");
+        }
+    } else {
+        res.status(404);
+        throw new Error("User not found");
+    }
+});
 // @desc:   Update User critical props
 // @route:  PUT /api/users/:userId/role
 // @access: PRIVATE && Admin

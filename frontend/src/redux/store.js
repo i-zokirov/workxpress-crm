@@ -5,6 +5,7 @@ import initialState from "./initialState";
 
 import {
     authenticationReducer,
+    updatePasswordReducer,
     updateProfileReducer,
     userProfileReducer,
 } from "./reducers/userReducers";
@@ -28,6 +29,7 @@ const masterReducer = combineReducers({
     students: studentsReducer,
     studentProfile: studentProfileReducer,
     updateStudentProfile: studentProfileUpdateReducer,
+
     createStudentProfile: studentProfileCreateReducer,
     deleteStudentProfile: studentProfileDeleteReducer,
     staff: staffReducer,
@@ -35,6 +37,7 @@ const masterReducer = combineReducers({
     offices: officesReducer,
     profile: userProfileReducer,
     updateProfile: updateProfileReducer,
+    updatePassword: updatePasswordReducer,
     notification: notificationReducer,
     classList: classListReducer,
     dashboardStats: dashboardStatsReducer,
