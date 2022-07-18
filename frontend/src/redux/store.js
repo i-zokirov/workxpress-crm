@@ -18,6 +18,7 @@ import {
 } from "./reducers/studenReducers";
 import { staffReducer, teachersReducer } from "./reducers/staffReducers";
 import {
+    officeCreateReducer,
     officeReducer,
     officesReducer,
     officeUpdateReducer,
@@ -40,6 +41,7 @@ const masterReducer = combineReducers({
     offices: officesReducer,
     office: officeReducer,
     updateOffice: officeUpdateReducer,
+    createOffice: officeCreateReducer,
     profile: userProfileReducer,
     updateProfile: updateProfileReducer,
     updatePassword: updatePasswordReducer,

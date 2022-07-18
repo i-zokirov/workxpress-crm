@@ -17,6 +17,23 @@ export const getAllOffices = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc:   Create office
+// @route:  POST /api/offices
+// @access: PRIVATE && Admin
+export const createOffice = asyncHandler(async (req, res) => {
+    try {
+        const { officeName, address, phone } = req.body;
+        const office = await Office.create({
+            officeName,
+            address,
+            phone,
+        });
+        res.json(office);
+    } catch (error) {
+        throw error;
+    }
+});
+
 // @desc:   Get single office
 // @route:  GET /api/offices/:officeId
 // @access: PRIVATE

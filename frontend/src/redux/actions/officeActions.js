@@ -10,6 +10,9 @@ import {
     OFFICE_UPDATE_REQUEST,
     OFFICE_UPDATE_SUCCESS,
     OFFICE_UPDATE_FAILURE,
+    OFFICE_CREATE_REQUEST,
+    OFFICE_CREATE_SUCCESS,
+    OFFICE_CREATE_FAILURE,
 } from "redux/constants/officeConstants";
 import { deployNotification } from "./notificationActions";
 import { logoutUser } from "./userActions";
@@ -110,6 +113,49 @@ export const updateOffice = (officeId, reqbody) => {
                     : error.message;
             dispatch({
                 type: OFFICE_UPDATE_FAILURE,
+                payload: err,
+            });
+
+            dispatch(deployNotification(err, "error"));
+        }
+    };
+};
+
+export const createOffice = (reqbody) => {
+    return async (dispatch, getState) => {
+        try {
+            dispatch({ type: OFFICE_CREATE_REQUEST });
+            const {
+                auth: { userData },
+            } = getState();
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userData.token}`,
+                },
+            };
+            const { data } = await axios.post(
+                `${baseUrl}/api/offices`,
+                reqbody,
+                config
+            );
+            dispatch({ type: OFFICE_CREATE_SUCCESS, payload: data });
+            dispatch(
+                deployNotification(
+                    "New office has been successfully created",
+                    "success"
+                )
+            );
+        } catch (error) {
+            if (error.response.data.message === "jwt expired") {
+                dispatch(logoutUser());
+            }
+            const err =
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message;
+            console.log(err);
+            dispatch({
+                type: OFFICE_CREATE_FAILURE,
                 payload: err,
             });
 

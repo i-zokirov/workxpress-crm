@@ -170,7 +170,7 @@ const Students = () => {
                 alignItems="center"
                 width="3.25rem"
                 height="3.25rem"
-                bgColor="linear-gradient(195deg, #49a3f1, #1A73E8)"
+                bgColor="primary"
                 shadow="sm"
                 borderRadius="50%"
                 position="fixed"

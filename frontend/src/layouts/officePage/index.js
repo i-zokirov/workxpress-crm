@@ -35,7 +35,6 @@ const Overview = () => {
     const [image, setImage] = useState("");
 
     useEffect(() => {
-        console.log(image);
         if (data) {
             setImage(data.image ? data.image.banner : "");
         }
@@ -94,7 +93,7 @@ const Overview = () => {
                                                 postalCode:
                                                     data.address.postalCode,
                                                 city: data.address.city,
-                                                officeManager: (
+                                                officeManager: data.manager ? (
                                                     <Link
                                                         to={`/staff/${data.manager._id}`}
                                                         style={{
@@ -105,15 +104,18 @@ const Overview = () => {
                                                     >
                                                         {data.manager.name}
                                                     </Link>
+                                                ) : (
+                                                    ""
                                                 ),
-                                                managerContact:
-                                                    data.manager
-                                                        .mobilePhoneNumber,
+                                                managerContact: data.manager
+                                                    ? data.manager
+                                                          .mobilePhoneNumber
+                                                    : "",
                                             }}
                                             action={{
                                                 function:
                                                     handleOpenEditWindowChange,
-                                                tooltip: "Edit Profile",
+                                                tooltip: "Edit Office Info",
                                             }}
                                             shadow={false}
                                         />
