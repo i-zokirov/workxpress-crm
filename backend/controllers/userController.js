@@ -3,6 +3,7 @@ import asyncHandler from "express-async-handler";
 import generateToken from "../utils/generateToken.js";
 import uploadImage from "../middleware/uploadImage.js";
 import { cloudinary } from "../services/cloudinary.js";
+import Office from "../data-models/officesModel.js";
 
 // @desc:   Get all users
 // @route:  GET /api/users
@@ -194,7 +195,7 @@ export const updateSingleUser = asyncHandler(async (req, res) => {
 export const updatePassword = asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.userId);
     const { password, newPassword } = req.body;
-    console.log(req.body);
+
     if (user) {
         if (user._id.toString() === req.user._id.toString()) {
             if (await user.matchPassword(password)) {
@@ -228,15 +229,44 @@ export const updateCriticalProp = asyncHandler(async (req, res) => {
 
     if (user) {
         user.role = req.body.role ? req.body.role : user.role;
-        user.registeredOffice = req.body.registeredOffice
-            ? req.body.registeredOffice
-            : user.registeredOffice;
+
+        if (req.body.registeredOffice) {
+            const previousOffice = user.registeredOffice;
+            const officeId = req.body.registeredOffice;
+            const office = await Office.findById(officeId).populate(
+                "employees"
+            );
+            if (office) {
+                user.registeredOffice = officeId;
+                if (office.employees.length) {
+                    if (
+                        !office.employees.some(
+                            (x) => x._id.toString() === user._id.toString()
+                        )
+                    ) {
+                        office.employees.push(user._id);
+
+                        await office.save();
+                    }
+                } else {
+                    office.employees = [user._id];
+                    await office.save();
+                }
+                user.registeredOffice = officeId;
+            }
+
+            if (previousOffice) {
+                const prevOffice = await Office.findById(previousOffice._id);
+                if (prevOffice) {
+                    prevOffice.employees.pull(user._id);
+                    await prevOffice.save();
+                }
+            }
+        }
+
         await user.save();
 
-        const newUser = await User.findById(req.params.userId)
-            .select("-password")
-            .populate("registeredOffice", "officeName");
-        res.json(newUser);
+        res.json({ message: "User record has been successfully updated!" });
     } else {
         res.status(404);
         throw new Error("User not found");

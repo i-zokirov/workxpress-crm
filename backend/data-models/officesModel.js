@@ -36,6 +36,12 @@ const officeSchema = mongoose.Schema(
                 ref: "User",
             },
         ],
+        students: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Student",
+            },
+        ],
         manager: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",

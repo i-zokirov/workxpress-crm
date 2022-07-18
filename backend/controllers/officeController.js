@@ -8,10 +8,9 @@ import { cloudinary } from "../services/cloudinary.js";
 // @access: PRIVATE
 export const getAllOffices = asyncHandler(async (req, res) => {
     try {
-        const offices = await Office.find().populate(
-            "manager",
-            "name mobilePhoneNumber image"
-        );
+        const offices = await Office.find()
+            .populate("manager", "name mobilePhoneNumber image")
+            .populate("students", "name");
         res.json(offices);
     } catch (error) {
         throw error;
@@ -24,6 +23,7 @@ export const getAllOffices = asyncHandler(async (req, res) => {
 export const getSingleOffice = asyncHandler(async (req, res) => {
     const office = await Office.findById(req.params.officeId)
         .populate("employees", "name mobilePhoneNumber role image")
+        .populate("students", "name")
         .populate("manager", "name mobilePhoneNumber role image");
     if (office) {
         res.json(office);

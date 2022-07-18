@@ -120,7 +120,41 @@ export const updateStudent = asyncHandler(async (req, res) => {
         student.image = req.body.image ? req.body.image : student.image;
         student.address = req.body.address ? req.body.address : student.address;
         student.status = req.body.status ? req.body.status : student.status;
-        student.branch = req.body.branch ? req.body.branch : student.branch;
+
+        // if req body contains new branch where user is registered, update office documents respectively
+        if (req.body.branch) {
+            const officeId = req.body.branch;
+
+            const office = await Office.findById(officeId);
+            if (office) {
+                if (office.students.length) {
+                    if (
+                        !office.students.some(
+                            (x) => x._id.toString() === student._id
+                        )
+                    ) {
+                        office.students.push(student._id);
+                        await office.save();
+                    }
+                } else {
+                    office.students = [student._id];
+                    await office.save();
+                }
+
+                student.branch = officeId;
+            }
+
+            if (previousStudentObject.branch) {
+                const previousOffice = await Office.findById(
+                    previousStudentObject.branch._id
+                );
+
+                if (previousOffice.students.length) {
+                    previousOffice.students.pull(student._id);
+                    await previousOffice.save();
+                }
+            }
+        }
 
         if (req.body.update) {
             student.updateHistory.push(req.body.update);

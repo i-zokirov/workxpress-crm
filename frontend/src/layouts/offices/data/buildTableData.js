@@ -80,6 +80,7 @@ const buildOfficeTableData = (officeList) => {
             { Header: "Telephone", accessor: "telephone", align: "left" },
             { Header: "office manager", accessor: "manager", align: "left" },
             { Header: "employees", accessor: "employees", align: "center" },
+            { Header: "students", accessor: "students", align: "center" },
             { Header: "action", accessor: "action", align: "center" },
         ],
 
@@ -100,6 +101,11 @@ const buildOfficeTableData = (officeList) => {
                 employees: (
                     <MDTypography variant="caption" color="text">
                         {office.employees.length}
+                    </MDTypography>
+                ),
+                students: (
+                    <MDTypography variant="caption" color="text">
+                        {office.students.length}
                     </MDTypography>
                 ),
                 action: (
