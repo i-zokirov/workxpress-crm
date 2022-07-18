@@ -15,10 +15,10 @@ import Footer from "examples/Footer";
 import OfficeCard from "./officeInfoCard";
 import Header from "./Header";
 import EmployeesList from "./EmployeesList";
-
+import OfficeEdit from "./OfficeEdit.js";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { loadOffice } from "redux/actions/officeActions";
 
 const Overview = () => {
@@ -26,11 +26,23 @@ const Overview = () => {
     const dispatch = useDispatch();
 
     const { data, loading } = useSelector((state) => state.office);
+    const user = useSelector((state) => state.auth.userData);
     useEffect(() => {
         dispatch(loadOffice(officeId));
     }, [officeId]);
 
-    console.log(data);
+    const [openEditWindow, setOpenEditWindow] = useState(false);
+    const [image, setImage] = useState("");
+
+    useEffect(() => {
+        console.log(image);
+        if (data) {
+            setImage(data.image ? data.image.banner : "");
+        }
+    }, [data]);
+    const handleOpenEditWindowChange = () => {
+        setOpenEditWindow((prev) => !prev);
+    };
 
     return (
         <>
@@ -44,67 +56,84 @@ const Overview = () => {
             <DashboardLayout>
                 <DashboardNavbar />
                 <MDBox mb={2} />
-                {data && (
-                    <Header name={data.officeName} image={data.image}>
-                        <MDBox mt={5} mb={3}>
-                            <Grid container spacing={1}>
-                                <Grid
-                                    item
-                                    xs={12}
-                                    md={6}
-                                    xl={4}
-                                    sx={{ display: "flex" }}
-                                >
-                                    <Divider
-                                        orientation="vertical"
-                                        sx={{ ml: -2, mr: 1 }}
-                                    />
-                                    <OfficeCard
-                                        title="Office information"
-                                        description=""
-                                        info={{
-                                            officeName: data.officeName,
-                                            telephone: data.phone,
-                                            streetName: `${data.address.street} ${data.address.suite}`,
-                                            postalCode: data.address.postalCode,
-                                            city: data.address.city,
-                                            officeManager: (
-                                                <Link
-                                                    to={`/staff/${data.manager._id}`}
-                                                    style={{
-                                                        textDecoration:
-                                                            "underline",
-                                                        color: "inherit",
-                                                    }}
-                                                >
-                                                    {data.manager.name}
-                                                </Link>
-                                            ),
-                                            managerContact:
-                                                data.manager.mobilePhoneNumber,
-                                        }}
-                                        action={{
-                                            route: "",
-                                            tooltip: "Edit Profile",
-                                        }}
-                                        shadow={false}
-                                    />
-                                    <Divider
-                                        orientation="vertical"
-                                        sx={{ mx: 0 }}
-                                    />
-                                </Grid>
+                {data && user && (
+                    <>
+                        {user.role === "Administrator" && (
+                            <OfficeEdit
+                                image={image}
+                                setImage={setImage}
+                                office={data}
+                                onClose={handleOpenEditWindowChange}
+                                open={openEditWindow}
+                                user={user}
+                            />
+                        )}
 
-                                <Grid item xs={12} xl={8}>
-                                    <EmployeesList
-                                        title="staff"
-                                        employees={data.employees}
-                                        shadow={false}
-                                    />
+                        <Header name={data.officeName} image={image}>
+                            <MDBox mt={5} mb={3}>
+                                <Grid container spacing={1}>
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        md={6}
+                                        xl={4}
+                                        sx={{ display: "flex" }}
+                                    >
+                                        <Divider
+                                            orientation="vertical"
+                                            sx={{ ml: -2, mr: 1 }}
+                                        />
+                                        <OfficeCard
+                                            title="Office information"
+                                            description=""
+                                            useAction={true}
+                                            info={{
+                                                officeName: data.officeName,
+                                                telephone: data.phone,
+                                                streetName: `${data.address.street} ${data.address.suite}`,
+                                                postalCode:
+                                                    data.address.postalCode,
+                                                city: data.address.city,
+                                                officeManager: (
+                                                    <Link
+                                                        to={`/staff/${data.manager._id}`}
+                                                        style={{
+                                                            textDecoration:
+                                                                "underline",
+                                                            color: "inherit",
+                                                        }}
+                                                    >
+                                                        {data.manager.name}
+                                                    </Link>
+                                                ),
+                                                managerContact:
+                                                    data.manager
+                                                        .mobilePhoneNumber,
+                                            }}
+                                            action={{
+                                                function:
+                                                    handleOpenEditWindowChange,
+                                                tooltip: "Edit Profile",
+                                            }}
+                                            shadow={false}
+                                        />
+                                        <Divider
+                                            orientation="vertical"
+                                            sx={{ mx: 0 }}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} xl={8}>
+                                        <EmployeesList
+                                            title="staff"
+                                            employees={data.employees}
+                                            shadow={false}
+                                        />
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </MDBox>
-                    </Header>
+                            </MDBox>
+                        </Header>
+                    </>
                 )}
 
                 <Footer />

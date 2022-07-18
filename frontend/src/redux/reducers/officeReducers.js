@@ -5,6 +5,9 @@ import {
     OFFICE_REQUEST,
     OFFICE_SUCCESS,
     OFFICE_FAILURE,
+    OFFICE_UPDATE_REQUEST,
+    OFFICE_UPDATE_SUCCESS,
+    OFFICE_UPDATE_FAILURE,
 } from "redux/constants/officeConstants";
 import initialState from "redux/initialState";
 
@@ -51,6 +54,31 @@ export const officeReducer = (state = {}, action) => {
             return {
                 loading: false,
                 data: null,
+                error: action.payload,
+            };
+        default:
+            return state;
+    }
+};
+
+export const officeUpdateReducer = (state = {}, action) => {
+    switch (action.type) {
+        case OFFICE_UPDATE_REQUEST:
+            return {
+                loading: true,
+                success: false,
+                error: null,
+            };
+        case OFFICE_UPDATE_SUCCESS:
+            return {
+                loading: false,
+                success: true,
+                error: null,
+            };
+        case OFFICE_UPDATE_FAILURE:
+            return {
+                loading: false,
+                success: false,
                 error: action.payload,
             };
         default:

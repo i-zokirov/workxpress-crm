@@ -14,8 +14,16 @@ import MDTypography from "components/MDTypography";
 // Material Dashboard 2 React base styles
 import colors from "assets/theme/base/colors";
 import typography from "assets/theme/base/typography";
+import MDButton from "components/MDButton";
 
-function OfficeInfoCard({ title, description, info, social, action, shadow }) {
+function OfficeInfoCard({
+    title,
+    description,
+    info,
+    useAction,
+    action,
+    shadow,
+}) {
     const labels = [];
     const values = [];
     const { socialMediaColors } = colors;
@@ -73,16 +81,18 @@ function OfficeInfoCard({ title, description, info, social, action, shadow }) {
                 >
                     {title}
                 </MDTypography>
-                <MDTypography
-                    component={Link}
-                    to={action.route}
-                    variant="body2"
-                    color="secondary"
-                >
-                    <Tooltip title={action.tooltip} placement="top">
-                        <Icon>edit</Icon>
-                    </Tooltip>
-                </MDTypography>
+
+                {useAction && (
+                    <MDButton
+                        iconOnly={true}
+                        circular={true}
+                        onClick={action.function}
+                    >
+                        <Tooltip title={action.tooltip} placement="top">
+                            <Icon>edit</Icon>
+                        </Tooltip>
+                    </MDButton>
+                )}
             </MDBox>
             <MDBox p={2}>
                 <MDBox mb={2} lineHeight={1}>
