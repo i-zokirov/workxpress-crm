@@ -100,18 +100,38 @@ export const authenticate = asyncHandler(async (req, res) => {
         const user = await User.findOne({ email });
         if (user) {
             if (await user.matchPassword(password)) {
-                res.json({
-                    _id: user._id,
-                    name: user.name,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    email: user.email,
-                    role: user.role,
-                    token: !user.passwordExpired
-                        ? generateToken(user._id)
-                        : null,
-                    passwordExpired: user.passwordExpired,
-                });
+                if (!user.passwordExpired) {
+                    res.json({
+                        _id: user._id,
+                        name: user.name,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        email: user.email,
+                        role: user.role,
+                        token: generateToken(user._id),
+                        passwordExpired: user.passwordExpired,
+                    });
+                } else {
+                    if (req.body.newPassword) {
+                        user.password = req.body.newPassword;
+                        user.passwordExpired = false;
+
+                        await user.save();
+                        res.json({
+                            _id: user._id,
+                            name: user.name,
+                            firstName: user.firstName,
+                            lastName: user.lastName,
+                            email: user.email,
+                            role: user.role,
+                            token: generateToken(user._id),
+                            passwordExpired: false,
+                        });
+                    } else {
+                        res.status(401);
+                        throw new Error("Password expired");
+                    }
+                }
             } else {
                 res.status(401);
                 throw new Error("Invalid email or password");

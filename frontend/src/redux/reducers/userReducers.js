@@ -28,6 +28,7 @@ export const authenticationReducer = (state = initialState.auth, action) => {
                 authenticated: true,
                 userData: action.payload,
             };
+
         case USER_LOGIN_FAILURE:
             return {
                 loading: false,
