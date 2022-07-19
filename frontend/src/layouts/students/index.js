@@ -12,7 +12,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
-
+import Tooltip from "@mui/material/Tooltip";
 // Data
 import buildTableData from "layouts/students/data/buildTableData";
 
@@ -127,12 +127,17 @@ const Students = () => {
                                             iconOnly={true}
                                             onClick={handleRefresh}
                                         >
-                                            <Icon
-                                                fontSize="large"
-                                                sx={{ fontSize: "100px" }}
+                                            <Tooltip
+                                                title="Refresh data"
+                                                placement="top-start"
                                             >
-                                                refresh_icon
-                                            </Icon>
+                                                <Icon
+                                                    fontSize="large"
+                                                    sx={{ fontSize: "100px" }}
+                                                >
+                                                    refresh_icon
+                                                </Icon>
+                                            </Tooltip>
                                         </MDButton>
                                     </MDBox>
                                 </MDBox>
@@ -181,9 +186,11 @@ const Students = () => {
                 sx={{ cursor: "pointer" }}
                 onClick={handleCreateStudentWindowStateChange}
             >
-                <Icon fontSize="small" color="inherit">
-                    add_circle_outline_icon
-                </Icon>
+                <Tooltip title="Add new student" placement="top-start">
+                    <Icon fontSize="small" color="inherit">
+                        add_circle_outline_icon
+                    </Icon>
+                </Tooltip>
             </MDBox>
         </>
     );

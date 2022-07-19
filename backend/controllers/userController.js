@@ -37,9 +37,9 @@ export const registerUser = asyncHandler(async (req, res) => {
         password,
         firstName,
         lastName,
+        role,
+        registeredOffice,
         gender,
-        mobilePhoneNumber,
-        birthdate,
     } = req.body;
     const userExists = await User.findOne({ email });
 
@@ -64,16 +64,19 @@ export const registerUser = asyncHandler(async (req, res) => {
                 "/upload/w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/"
             ),
     };
+
+    const office = await Office.findById(registeredOffice);
+
     const newUser = await User.create({
         name: `${firstName} ${lastName}`,
         firstName,
         lastName,
         email,
         password,
-        passwordExpired: true,
+        role,
         gender,
-        mobilePhoneNumber,
-        birthdate,
+        registeredOffice: office ? office._id : "",
+        passwordExpired: true,
         image,
     });
     if (newUser) {

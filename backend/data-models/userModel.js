@@ -47,7 +47,6 @@ const userSchema = mongoose.Schema(
         },
         birthdate: {
             type: String,
-            required: true,
         },
         gender: {
             type: String,
@@ -79,7 +78,6 @@ const userSchema = mongoose.Schema(
         },
         mobilePhoneNumber: {
             type: String,
-            required: true,
         },
         homeTelephoneNumber: {
             type: String,

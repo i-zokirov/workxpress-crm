@@ -4,7 +4,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
-const index = ({ label, value, onChange, options, name }) => {
+const index = ({ label, value, onChange, options, name, required = false }) => {
     return (
         <FormControl sx={{ minWidth: "100%" }}>
             <InputLabel id={`select-${label}`}>{label}</InputLabel>
@@ -16,6 +16,7 @@ const index = ({ label, value, onChange, options, name }) => {
                 onChange={onChange}
                 sx={{ height: "42px" }}
                 name={name}
+                required
             >
                 <MenuItem value="">
                     <em>None</em>

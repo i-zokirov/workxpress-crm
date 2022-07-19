@@ -2,7 +2,7 @@
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import { LinearProgress, Container, Icon } from "@mui/material";
-
+import Tooltip from "@mui/material/Tooltip";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -123,9 +123,11 @@ const OfficesTable = () => {
                         sx={{ cursor: "pointer" }}
                         onClick={handleOpenModalChange}
                     >
-                        <Icon fontSize="small" color="inherit">
-                            add_circle_outline_icon
-                        </Icon>
+                        <Tooltip title="Add new office" placement="top-start">
+                            <Icon fontSize="small" color="inherit">
+                                add_circle_outline_icon
+                            </Icon>
+                        </Tooltip>
                     </MDBox>
 
                     <OfficeCreate
