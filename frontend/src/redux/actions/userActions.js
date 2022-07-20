@@ -57,6 +57,7 @@ export const logoutUser = () => {
     return (dispatch) => {
         localStorage.removeItem("userData");
         dispatch({ type: USER_LOGOUT });
+        dispatch({ type: "RESET_SESSION" });
     };
 };
 

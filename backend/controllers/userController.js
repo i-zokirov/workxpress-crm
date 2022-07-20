@@ -176,29 +176,27 @@ export const updateSingleUser = asyncHandler(async (req, res) => {
             user._id.toString() === req.user._id.toString() ||
             req.user.role === "Administrator"
         ) {
-            user.name = req.body.name ? req.body.name : user.name;
-            user.lastName = req.body.lastName
-                ? req.body.lastName
-                : user.lastName;
-            user.firstName = req.body.firstName
-                ? req.body.firstName
-                : user.firstName;
             user.birthdate = req.body.birthdate
                 ? req.body.birthdate
                 : user.birthdate;
-            user.email = req.body.email ? req.body.email : user.email;
+
             user.mobilePhoneNumber = req.body.mobilePhoneNumber
                 ? req.body.mobilePhoneNumber
                 : user.mobilePhoneNumber;
             user.homeTelephoneNumber = req.body.homeTelephoneNumber
                 ? req.body.homeTelephoneNumber
                 : user.homeTelephoneNumber;
-            user.image = req.body.image ? req.body.image : user.image;
-            user.bio = req.body.bio;
-            user.address = req.body.address;
-            user.telegram = req.body.telegram;
-            user.facebook = req.body.facebook;
-            user.instagram = req.body.instagram;
+            user.bio = req.body.bio ? req.body.bio : user.bio;
+            user.address = req.body.address ? req.body.address : user.address;
+            user.telegram = req.body.telegram
+                ? req.body.telegram
+                : user.telegram;
+            user.facebook = req.body.facebook
+                ? req.body.facebook
+                : user.facebook;
+            user.instagram = req.body.instagram
+                ? req.body.instagram
+                : user.instagram;
 
             await user.save();
             res.json({ message: "Successfully updated!" });

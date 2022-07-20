@@ -12,7 +12,7 @@ const buildOfficeTableData = (officeList) => {
     const Manager = ({ manager }) => (
         <MDBox display="flex" alignItems="center" lineHeight={1}>
             <MDAvatar
-                src={team2}
+                src={manager.image.thumbnail}
                 name={manager ? manager.name : ""}
                 size="sm"
             />

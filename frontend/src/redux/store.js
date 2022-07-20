@@ -20,6 +20,7 @@ import {
     staffCreateReducer,
     staffReducer,
     teachersReducer,
+    updateStaffReducer,
 } from "./reducers/staffReducers";
 import {
     officeCreateReducer,
@@ -33,7 +34,8 @@ import dashboardStatsReducer from "./reducers/dashboardStatsReducer";
 
 const middleware = [thunk];
 
-const masterReducer = combineReducers({
+const allReducers = combineReducers({
+    state: (state = {}) => state,
     auth: authenticationReducer,
     students: studentsReducer,
     studentProfile: studentProfileReducer,
@@ -42,6 +44,7 @@ const masterReducer = combineReducers({
     deleteStudentProfile: studentProfileDeleteReducer,
     staff: staffReducer,
     createStaff: staffCreateReducer,
+    updateStaff: updateStaffReducer,
     teacherStaff: teachersReducer,
     offices: officesReducer,
     office: officeReducer,
@@ -55,8 +58,19 @@ const masterReducer = combineReducers({
     dashboardStats: dashboardStatsReducer,
 });
 
+const rootReducer = (state, action) => {
+    if (action.type === "RESET_SESSION") {
+        const { offices, classList, dashboardStats, students, staff, auth } =
+            state;
+
+        // reset entire state except the values excluded below
+        state = { offices, classList, dashboardStats, students, staff, auth };
+    }
+    return allReducers(state, action);
+};
+
 const store = createStore(
-    masterReducer,
+    rootReducer,
     initialState,
     composeWithDevTools(applyMiddleware(...middleware))
 );

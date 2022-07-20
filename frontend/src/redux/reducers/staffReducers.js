@@ -5,6 +5,9 @@ import {
     STAFF_CREATE_FAILURE,
     STAFF_CREATE_REQUEST,
     STAFF_CREATE_SUCCESS,
+    STAFF_UPDATE_FAILURE,
+    STAFF_UPDATE_REQUEST,
+    STAFF_UPDATE_SUCCESS,
     TEACHERS_LIST_FAILURE,
     TEACHERS_LIST_REQUEST,
     TEACHERS_LIST_SUCCESS,
@@ -54,6 +57,29 @@ export const teachersReducer = (state = {}, action) => {
             return {
                 loading: false,
                 list: [],
+                error: action.payload,
+            };
+        default:
+            return state;
+    }
+};
+
+export const updateStaffReducer = (state = {}, action) => {
+    switch (action.type) {
+        case STAFF_UPDATE_REQUEST:
+            return {
+                loading: true,
+            };
+        case STAFF_UPDATE_SUCCESS:
+            return {
+                loading: false,
+                success: true,
+                data: action.payload,
+            };
+        case STAFF_UPDATE_FAILURE:
+            return {
+                loading: false,
+                success: false,
                 error: action.payload,
             };
         default:
